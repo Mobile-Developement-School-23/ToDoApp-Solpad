@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="large_title">32dp</dimen>
+    <dimen name="title">20dp</dimen>
+    <dimen name="button">14dp</dimen>
+    <dimen name="Body">16dp</dimen>
+    <dimen name="Subhead">14dp</dimen>
+    <dimen name="pudding_large">24dp</dimen>
+    <dimen name="pudding_medium">16dp</dimen>
+
+</resources>

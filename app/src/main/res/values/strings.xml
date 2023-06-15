@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ToDoApp</string>
+    <string name="title">Мои дела</string>
+    <string name="number_of_completed">Выполнено - %1$s</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="hint_adding">Что надо сделать...</string>
+    <string name="important">Важность</string>
+    <string name="deathline">Сделать до</string>
+    <string name="delete">Удалить</string>
+    <string-array name="importance">
+        <item>Нет</item>
+        <item>Низкий</item>
+        <item>Высокий</item>
+    </string-array>
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/checkboxItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        />
+
+    <ImageView
+        android:id="@+id/importanceItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/titleItem"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="14dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Body"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="5dp"
+            style="@style/TextAppearance.Body"
+            android:textColor="?attr/label_primary"
+            android:text="Купить что-то"/>
+
+
+        <TextView
+            android:id="@+id/deathlineItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Subhead"
+            android:textColor="?attr/label_tertiary"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/infoItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_info"
+        android:layout_margin="14dp"
+
+        android:padding="5dp"
+        app:tint="?attr/label_tertiary" />
+</LinearLayout>
