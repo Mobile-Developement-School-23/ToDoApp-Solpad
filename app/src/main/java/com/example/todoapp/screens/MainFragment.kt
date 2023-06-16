@@ -1,7 +1,7 @@
 package com.example.todoapp.screens
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.adapter.MainAdapter
 import com.example.todoapp.databinding.FragmentMainBinding
+import com.example.todoapp.model.TodoItem
 import com.example.todoapp.model.TodoItemsRepository
 
 class MainFragment : Fragment() {
@@ -53,19 +54,19 @@ class MainFragment : Fragment() {
     }
     fun initRecyclerView(){
         _binding?.apply {
-            adapterToDo = MainAdapter(TodoItemsRepository().getToDoItems())
+            adapterToDo = MainAdapter(TodoItemsRepository().getTodoItems(),MainAdapter.OnClickListener{
+                setOnClickListenerRV(it)
+            })
             recyclerviewDo.layoutManager = LinearLayoutManager(context)
             recyclerviewDo.adapter = adapterToDo
         }
     }
-    private fun setOnClickListenerRV(){
-        adapterToDo.setOnItemClickListener { todoItem ->
-            val bundle = bundleOf("case" to todoItem)
-            findNavController().navigate(
-                R.id.action_mainFragment_to_addingFragment,
-                bundle
-            )
+    private fun setOnClickListenerRV(item: TodoItem){
+        Log.e("setOnClickListenerRV",item.toString())
+        val bundle = bundleOf("item" to item)
+        findNavController().navigate(
+            R.id.action_mainFragment_to_addingFragment,
+            bundle
+        )
         }
     }
-
-}

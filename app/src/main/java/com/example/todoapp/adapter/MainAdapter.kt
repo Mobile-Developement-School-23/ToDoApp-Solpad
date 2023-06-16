@@ -4,6 +4,8 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
 import com.example.todoapp.Utils
@@ -11,8 +13,13 @@ import com.example.todoapp.databinding.TodoItemBinding
 import com.example.todoapp.model.Importance
 import com.example.todoapp.model.TodoItem
 
-class MainAdapter(val todoItemList:List<TodoItem>): RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
+class MainAdapter(val todoItemList:List<TodoItem>,private val onClickListener: OnClickListener): RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
+
+
+    class OnClickListener(val clickListener: (item: TodoItem) -> Unit) {
+        fun onClick(item: TodoItem) = clickListener(item)
+    }
 
     class MainViewHolder(view: View):RecyclerView.ViewHolder(view) {
 
@@ -42,9 +49,8 @@ class MainAdapter(val todoItemList:List<TodoItem>): RecyclerView.Adapter<MainAda
          onSetListenerCheckBox(holder,position)
 
          holder.itemView.setOnClickListener {
-
+             onClickListener.onClick(todoItemList[position])
          }
-
 
          if (todoItemList[position].importance == Importance.LOW){
              holder.importanceItem.visibility = View.VISIBLE

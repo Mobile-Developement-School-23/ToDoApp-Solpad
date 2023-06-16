@@ -16,4 +16,11 @@ class AddingFragmentViewModel:ViewModel() {
         todoItemsRepository.setTodoItems(item)
     }
 
+    fun deleteItemToList(item: TodoItem) = viewModelScope.launch {
+        todoItemsRepository.deleteTodoItems(item)
+    }
+
+    fun changeItemToList(item: TodoItem) = viewModelScope.launch {
+        todoItemsRepository.changeTodoItems(item)
+    }
 }

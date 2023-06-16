@@ -1,8 +1,5 @@
 package com.example.todoapp.model
 
-import android.util.Log
-import java.util.*
-
 class TodoItemsRepository {
     companion object{
         var list = mutableListOf<TodoItem>(
@@ -19,11 +16,19 @@ class TodoItemsRepository {
 
     }
 
-    fun getToDoItems():List<TodoItem>{
+    fun deleteTodoItems(item:TodoItem){
+        list.remove(item)
+    }
+
+    fun getTodoItems():List<TodoItem>{
         return list
     }
 
     fun setTodoItems(item:TodoItem){
         list.add(item)
+    }
+
+    fun changeTodoItems(item: TodoItem){
+
     }
 }

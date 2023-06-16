@@ -11,7 +11,7 @@ class MainFragmentViewModel:ViewModel() {
     private val todoItemsRepository = TodoItemsRepository()
 
     init {
-        countCompletedTask(todoItemsRepository.getToDoItems())
+        countCompletedTask(todoItemsRepository.getTodoItems())
     }
 
     fun countCompletedTask(list: List<TodoItem>){

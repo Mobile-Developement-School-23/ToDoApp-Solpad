@@ -1,7 +1,9 @@
 package com.example.todoapp.model
 
-import java.util.Date
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class TodoItem(
     var id:String,
     var content:String?,
@@ -10,5 +12,5 @@ data class TodoItem(
     var dateCreated: Long?,
     var dateChanged: Long?=0L,
     var deadline: Long? = 0L,
-    ){
+    ): Parcelable {
 }
