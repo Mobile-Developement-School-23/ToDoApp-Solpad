@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".screens.AddingFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
         android:background="?attr/back_primary"
-        >
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -84,23 +83,22 @@
 
                 <TextView
                     android:id="@+id/textview_important"
+                    style="@style/TextAppearance.Body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/pudding_large"
                     android:layout_marginBottom="4dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="@string/important"
-                    style="@style/TextAppearance.Body"
-                    android:textColor="?attr/label_primary"
-                     />
+                    android:textColor="?attr/label_primary" />
 
                 <Spinner
                     android:id="@+id/spinner_adding"
+                    style="@style/TextAppearance.Body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/pudding_large"
                     android:background="@null"
-                    style="@style/TextAppearance.Body"
                     android:entries="@array/importance" />
 
                 <View
@@ -108,16 +106,15 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
-                    android:background="?attr/support_separator"
-                    />
+                    android:background="?attr/support_separator" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchdeatline"
+                    style="@style/TextAppearance.Body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/pudding_large"
                     android:text="@string/deathline"
-                    style="@style/TextAppearance.Body"
                     android:textColor="?attr/label_primary"
                     android:theme="@style/switch_adding"
 
@@ -125,10 +122,10 @@
 
                 <TextView
                     android:id="@+id/textview_calendardate"
+                    style="@style/TextAppearance.Body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="дата"
-                    style="@style/TextAppearance.Body"
                     android:textColor="@color/color_light_blue"
                     android:visibility="invisible" />
 
@@ -139,8 +136,7 @@
                     android:layout_marginTop="@dimen/pudding_large"
                     android:layout_marginRight="4dp"
                     android:layout_marginBottom="@dimen/pudding_large"
-                    android:background="?attr/support_separator"
-                    />
+                    android:background="?attr/support_separator" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -155,12 +151,12 @@
 
                     <TextView
                         android:id="@+id/delete_button"
+                        style="@style/TextAppearance.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:text="@string/delete"
-                        android:textColor="@color/color_light_red"
-                        style="@style/TextAppearance.Body" />
+                        android:textColor="@color/color_light_red" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -57,13 +57,15 @@ class MainAdapter(val todoItemList:List<TodoItem>,private val onClickListener: O
              holder.importanceItem.setImageResource(R.drawable.ic_arrow_to_down)
 
          }
+         if (todoItemList[position].importance == Importance.ORDINARY){
+             holder.importanceItem.visibility = View.GONE
+         }
+
          if (todoItemList[position].importance == Importance.URGENT){
              holder.importanceItem.visibility = View.VISIBLE
              holder.importanceItem.setImageResource(R.drawable.ic_priority)
          }
-         if (todoItemList[position].importance == Importance.ORDINARY){
-             holder.importanceItem.visibility = View.GONE
-         }
+
 
          //checkbox
          if (todoItemList[position].flag == true) holder.checkBoxItem.isChecked = true
