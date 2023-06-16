@@ -21,19 +21,18 @@ class AddingFragment : Fragment() {
     private val mBinding get() = _binding!!
     private lateinit var mViewModel: AddingFragmentViewModel
 
+    // item из Bundle
     var todoItemBundle: TodoItem? = null
+
     var deathline: Long = 0L
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAddingBinding.inflate(layoutInflater, container, false)
+
+        // получение пргумента из Bundle
         val arguments = arguments
         if (arguments != null) {
             todoItemBundle = arguments.get("item") as TodoItem
@@ -60,6 +59,7 @@ class AddingFragment : Fragment() {
             deadline = deathline,
         )
     }
+
     // функция для обновления элемента в редактировании
     private fun changeTodoItem(todoItem: TodoItem): TodoItem {
         return todoItem.copy(
@@ -73,7 +73,6 @@ class AddingFragment : Fragment() {
 
     // инициализация всех listener и заполнение элемента для добавления
     private fun initialization() {
-
         todoItemBundle?.let { initializationItemInfo(it) }
         switchAndCalendarInit()
         closeSetListenerInit()
@@ -82,21 +81,22 @@ class AddingFragment : Fragment() {
     }
 
     // функция заполнения view при редактировании
-    private fun initializationItemInfo(todoItemInit: TodoItem){
+    private fun initializationItemInfo(todoItemInit: TodoItem) {
         mBinding.edittextAdding.append(todoItemInit.content)
 
-        if (todoItemInit.deadline != 0L){
+        if (todoItemInit.deadline != 0L) {
             mBinding.switchdeatline.isChecked = true
             mBinding.textviewCalendardate.visibility = View.VISIBLE
             mBinding.textviewCalendardate.text = todoItemInit.deadline?.let {
-                Utils().convertLongDeathlineToString( it )
+                Utils().convertLongDeathlineToString(it)
             }
         }
 
         todoItemInit.importance?.let { Utils().convertImportanceToId(it) }
             ?.let { mBinding.spinnerAdding.setSelection(it) }
     }
-    private fun closeSetListenerInit(){
+
+    private fun closeSetListenerInit() {
         mBinding.closeButton.setOnClickListener {
             findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
         }
@@ -118,9 +118,9 @@ class AddingFragment : Fragment() {
     }
 
 
-    private fun deleteSetListenerInit(){
+    private fun deleteSetListenerInit() {
         mBinding.deleteButton.setOnClickListener {
-            if(todoItemBundle != null){
+            if (todoItemBundle != null) {
                 mViewModel.deleteItemToList(todoItemBundle!!)
                 findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
             } else findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
@@ -128,19 +128,18 @@ class AddingFragment : Fragment() {
     }
 
 
-    private fun switchAndCalendarInit(){
+    // инициализация MaterialDatePicker и Switch
+    private fun switchAndCalendarInit() {
         var datepicker = MaterialDatePicker.Builder.datePicker()
         var materialDatePicker = datepicker.build()
         mBinding.switchdeatline.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked) {
-                materialDatePicker.show(parentFragmentManager,"tag")
 
-            }
+            if (isChecked)  materialDatePicker.show(parentFragmentManager, "tag")
             else mBinding.textviewCalendardate.visibility = View.INVISIBLE
         }
 
         mBinding.textviewCalendardate.setOnClickListener {
-            materialDatePicker.show(parentFragmentManager,"tag")
+            materialDatePicker.show(parentFragmentManager, "tag")
         }
 
         materialDatePicker.addOnPositiveButtonClickListener {

@@ -46,12 +46,13 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_mainFragment_to_addingFragment)
         }
     }
-
+    // установка количества выполненных задач
     private fun setCompletedTask(){
         mViewModel.completedTask?.observe(viewLifecycleOwner, Observer {
             mBinding.completeTitle.text = "Выполнено — " + it.toString()
         })
     }
+    // инициализация ресайклера
     fun initRecyclerView(){
         _binding?.apply {
             adapterToDo = MainAdapter(TodoItemsRepository().getTodoItems(),MainAdapter.OnClickListener{
@@ -61,6 +62,7 @@ class MainFragment : Fragment() {
             recyclerviewDo.adapter = adapterToDo
         }
     }
+    // clickListener на элемент ресайклера, тут же отправляем Bundle в AddingFragment
     private fun setOnClickListenerRV(item: TodoItem){
         Log.e("setOnClickListenerRV",item.toString())
         val bundle = bundleOf("item" to item)

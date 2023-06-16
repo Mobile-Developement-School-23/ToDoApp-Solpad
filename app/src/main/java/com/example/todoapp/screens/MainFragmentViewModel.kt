@@ -14,6 +14,7 @@ class MainFragmentViewModel:ViewModel() {
         countCompletedTask(todoItemsRepository.getTodoItems())
     }
 
+    // подсчет выполеных тасок
     fun countCompletedTask(list: List<TodoItem>){
         var count = 0
         for(element in list){
