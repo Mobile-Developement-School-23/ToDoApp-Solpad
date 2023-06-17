@@ -1,4 +1,4 @@
-package com.example.todoapp
+package com.example.todoapp.util
 
 import com.example.todoapp.model.Importance
 import java.text.SimpleDateFormat

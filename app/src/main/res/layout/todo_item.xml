@@ -37,6 +37,8 @@
             android:textSize="@dimen/Body"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="5dp"
+            android:maxLines="3"
+            android:ellipsize="end"
             style="@style/TextAppearance.Body"
             android:textColor="?attr/label_primary"
             android:text="Купить что-то"/>
