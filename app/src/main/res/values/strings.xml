@@ -7,6 +7,8 @@
     <string name="important">Важность</string>
     <string name="deathline">Сделать до</string>
     <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="New">Новое</string>
     <string-array name="importance">
         <item>Нет</item>
         <item>Низкий</item>

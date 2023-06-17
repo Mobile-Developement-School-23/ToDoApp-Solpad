@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.AddingFragment">
+    tools:context=".screens.adding.AddingFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -74,11 +74,11 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_corners"
                     android:elevation="5dp"
+                    android:ellipsize="end"
                     android:gravity="top"
                     android:hint="@string/hint_adding"
                     android:inputType="textMultiLine"
                     android:minLines="4"
-
                     android:padding="@dimen/pudding_medium" />
 
                 <TextView

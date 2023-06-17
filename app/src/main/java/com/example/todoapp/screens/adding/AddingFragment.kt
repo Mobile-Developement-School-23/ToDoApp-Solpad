@@ -1,4 +1,4 @@
-package com.example.todoapp.screens
+package com.example.todoapp.screens.adding
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
-import com.example.todoapp.Utils
+import com.example.todoapp.util.Utils
 import com.example.todoapp.databinding.FragmentAddingBinding
 import com.example.todoapp.model.TodoItem
 import com.google.android.material.datepicker.MaterialDatePicker
