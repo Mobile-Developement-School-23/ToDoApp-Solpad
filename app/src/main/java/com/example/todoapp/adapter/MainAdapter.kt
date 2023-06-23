@@ -77,6 +77,7 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
 
         //checkbox
         if (getItem(position).flag == true) {
+            Log.e("position",holder.itemView.toString())
             holder.checkBoxItem.isChecked = true
             holder.textItem.paintFlags = holder.textItem.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
@@ -94,9 +95,6 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
 
 
     }
-
-
-
     private fun onSetListenerCheckBox(holder: MainViewHolder, position: Int) {
         holder.checkBoxItem.setOnCheckedChangeListener { buttonView, isChecked ->
             getItem(position).flag = isChecked
@@ -108,7 +106,6 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
             }
         }
     }
-
     private fun onSetListenerButtonInfo(holder: MainViewHolder) {
         holder.infoItem.setOnClickListener {
             if (holder.deathlineItem.visibility == View.GONE) holder.deathlineItem.visibility =

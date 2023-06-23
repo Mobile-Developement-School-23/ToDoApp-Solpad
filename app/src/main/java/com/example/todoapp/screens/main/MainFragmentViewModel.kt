@@ -1,6 +1,5 @@
 package com.example.todoapp.screens.main
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,10 +16,14 @@ class MainFragmentViewModel:ViewModel() {
         countCompletedTask(todoItemsRepository.getTodoItems())
     }
 
-    fun deleteItemToList(item: TodoItem) = viewModelScope.launch {
+    fun deleteItemFromList(item: TodoItem) = viewModelScope.launch {
         todoItemsRepository.deleteTodoItems(item)
 
     }
+    fun addItemToList(item: TodoItem) = viewModelScope.launch {
+        todoItemsRepository.setTodoItems(item)
+    }
+
     // подсчет выполеных тасок
     fun countCompletedTask(list: List<TodoItem>){
         var count = 0

@@ -132,8 +132,8 @@ class AddingFragment : Fragment() {
     private fun switchAndCalendarInit() {
         var datepicker = MaterialDatePicker.Builder.datePicker()
         var materialDatePicker = datepicker.build()
-        mBinding.switchdeatline.setOnCheckedChangeListener { buttonView, isChecked ->
 
+        mBinding.switchdeatline.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked)  materialDatePicker.show(parentFragmentManager, "tag")
             else mBinding.textviewCalendardate.visibility = View.INVISIBLE
         }
@@ -147,6 +147,5 @@ class AddingFragment : Fragment() {
             mBinding.textviewCalendardate.text = materialDatePicker.headerText.toString()
             deathline = it
         }
-
     }
 }

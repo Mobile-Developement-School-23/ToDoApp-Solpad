@@ -2,7 +2,6 @@ package com.example.todoapp.screens.main
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.adapter.MainAdapter
 import com.example.todoapp.databinding.FragmentMainBinding
 import com.example.todoapp.model.TodoItem
 import com.example.todoapp.model.TodoItemsRepository
-import com.example.todoapp.util.ItemDiffCallback
+import com.example.todoapp.adapter.MainItemTouchHelper
 
 
 class MainFragment : Fragment() {
@@ -38,16 +37,21 @@ class MainFragment : Fragment() {
         return mBinding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        initRecyclerView()
-        setCompletedTask()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initialization(view)
         mBinding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_addingFragment)
         }
     }
+    //Инициализация всего в одной функции.
+    fun initialization(view: View) {
+        setRecyclerView()
+        setCompletedTask()
+        setItemTouchHelper(view)
+    }
 
-    // установка количества выполненных задач
+    // установка количества выполненных задач(пока не работает)
     private fun setCompletedTask() {
         mViewModel.completedTask?.observe(viewLifecycleOwner, Observer {
             mBinding.completeTitle.text = "Выполнено — " + it.toString()
@@ -55,7 +59,7 @@ class MainFragment : Fragment() {
     }
 
     // инициализация ресайклера
-    fun initRecyclerView() {
+    fun setRecyclerView() {
         mBinding?.apply {
             adapterToDo = MainAdapter(
                 MainAdapter.OnClickListener { setOnClickListenerRV(it) },
@@ -80,15 +84,7 @@ class MainFragment : Fragment() {
             bundle
         )
     }
-    private val setOnClickListenerRV = {
-        MainAdapter.OnClickListener {
-            val bundle = bundleOf("item" to it)
-            findNavController().navigate(
-                R.id.action_mainFragment_to_addingFragment,
-                bundle
-            )
-        }
-    }
+
     private fun setOnLongClickListener(item: TodoItem, view: View) {
         showPopUpMenu(item,view)
     }
@@ -109,7 +105,7 @@ class MainFragment : Fragment() {
                 }
                 R.id.menu_delete -> {
                     adapterToDo.notifyItemRemoved(TodoItemsRepository().getTodoItems().indexOf(item))
-                    mViewModel.deleteItemToList(item)
+                    mViewModel.deleteItemFromList(item)
                     adapterToDo.submitList(TodoItemsRepository().getTodoItems())
                     adapterToDo.notifyDataSetChanged();
                     true
@@ -118,5 +114,11 @@ class MainFragment : Fragment() {
             }
         }
         popupMenu?.show();
+    }
+
+    fun setItemTouchHelper(view: View){
+        var simpleItemTouchCallback = MainItemTouchHelper(adapterToDo,mViewModel,view)
+        var itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(mBinding.recyclerviewDo)
     }
 }

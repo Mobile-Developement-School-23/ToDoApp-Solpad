@@ -22,9 +22,5 @@ class Utils {
             else -> 0
         }
     }
-    fun convertLongDeathlineToString(TimeinMilliSeccond :Long):String{
-        val dateString: String = SimpleDateFormat("dd MMMM yyyy").format(Date(TimeinMilliSeccond))
-        println(dateString)
-        return dateString
-    }
+    fun convertLongDeathlineToString(TimeinMilliSeccond :Long) =  SimpleDateFormat("dd MMMM yyyy").format(Date(TimeinMilliSeccond))
 }

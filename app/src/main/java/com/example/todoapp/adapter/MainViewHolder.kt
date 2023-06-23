@@ -18,6 +18,8 @@ class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         if (item.deadline != 0L) deathlineItem.text =
             item.deadline?.let { Utils().convertLongDeathlineToString(it) }
         else deathlineItem.text = "Дедлайна нет, гуляем"
+        item.flag?.let { checkBoxItem.isChecked = item.flag!! }
+
     }
 
 
