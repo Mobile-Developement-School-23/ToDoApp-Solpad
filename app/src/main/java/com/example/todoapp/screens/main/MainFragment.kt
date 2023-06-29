@@ -2,23 +2,23 @@ package com.example.todoapp.screens.main
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
-import com.example.todoapp.adapter.MainAdapter
+import com.example.todoapp.screens.adapter.MainAdapter
 import com.example.todoapp.databinding.FragmentMainBinding
 import com.example.todoapp.model.TodoItem
-import com.example.todoapp.model.TodoItemsRepository
-import com.example.todoapp.adapter.MainItemTouchHelper
+import com.example.todoapp.repository.TodoItemsRepository
+import com.example.todoapp.screens.adapter.MainItemTouchHelper
 
 
 class MainFragment : Fragment() {
@@ -43,19 +43,31 @@ class MainFragment : Fragment() {
         mBinding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_addingFragment)
         }
+
+        mViewModel.getListTodoItems()
+        mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner){
+            Log.e("observ",it.toString())
+            adapterToDo.submitList(it)
+            adapterToDo.notifyDataSetChanged()
+        }
     }
     //Инициализация всего в одной функции.
     fun initialization(view: View) {
         setRecyclerView()
         setCompletedTask()
         setItemTouchHelper(view)
+        //setItemTouchHelper(view = view,adapter = adapterToDo, item = item)
     }
 
     // установка количества выполненных задач(пока не работает)
     private fun setCompletedTask() {
+        /*
         mViewModel.completedTask?.observe(viewLifecycleOwner, Observer {
+
             mBinding.completeTitle.text = "Выполнено — " + it.toString()
         })
+
+         */
     }
 
     // инициализация ресайклера
@@ -64,9 +76,6 @@ class MainFragment : Fragment() {
             adapterToDo = MainAdapter(
                 MainAdapter.OnClickListener { setOnClickListenerRV(it) },
                 MainAdapter.OnLongClickListener { item, view -> setOnLongClickListener(item, view) })
-
-            adapterToDo.submitList(TodoItemsRepository().getTodoItems())
-
             var linearLayoutManager = LinearLayoutManager(context).apply {
                 reverseLayout = true
             }
@@ -104,10 +113,7 @@ class MainFragment : Fragment() {
                     true
                 }
                 R.id.menu_delete -> {
-                    adapterToDo.notifyItemRemoved(TodoItemsRepository().getTodoItems().indexOf(item))
-                    mViewModel.deleteItemFromList(item)
-                    adapterToDo.submitList(TodoItemsRepository().getTodoItems())
-                    adapterToDo.notifyDataSetChanged();
+                    mViewModel.deleteTodoItem(item.id)
                     true
                 }
                 else -> false
@@ -120,5 +126,35 @@ class MainFragment : Fragment() {
         var simpleItemTouchCallback = MainItemTouchHelper(adapterToDo,mViewModel,view)
         var itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(mBinding.recyclerviewDo)
+
     }
+/*
+    private fun setItemTouchHelper(item: TodoItem,adapter:MainAdapter,view: View,recyclerView: RecyclerView){
+        val itemTouchCallback = MainItemTouchHelper( view,
+            onSwipeLeft = { position ->
+                val item = adapter.getItem(position)
+                adapter.notifyItemRemoved(TodoItemsRepository().getTodoItems().indexOf(item))
+                mViewModel.deleteItemFromList(item)
+                adapter.submitList(TodoItemsRepository().getTodoItems())
+                adapter.notifyDataSetChanged();
+                var recyclerView = mBinding.recyclerviewDo
+                Snackbar.make(recyclerView,"Отменить удаление?", Snackbar.LENGTH_LONG)
+                    .setAction("Да",View.OnClickListener {
+                        mViewModel.addItemToList(item)
+                        adapter.notifyItemInserted(position)
+                        adapter.notifyDataSetChanged()
+                    }).show()
+            },
+            onSwipeRight = {position ->
+                item.flag = true
+                adapter.submitList(TodoItemsRepository().getTodoItems())
+                adapter.notifyDataSetChanged()
+            }
+        )
+        var itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(mBinding.recyclerviewDo)
+
+    }
+
+ */
 }

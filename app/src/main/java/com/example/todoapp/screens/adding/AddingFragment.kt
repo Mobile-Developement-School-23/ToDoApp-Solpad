@@ -61,7 +61,7 @@ class AddingFragment : Fragment() {
     }
 
     // функция для обновления элемента в редактировании
-    private fun changeTodoItem(todoItem: TodoItem): TodoItem {
+    private fun editTodoItem(todoItem: TodoItem): TodoItem {
         return todoItem.copy(
             content = mBinding.edittextAdding.text.toString(),
             importance = Utils().convertIdToImportance(mBinding.spinnerAdding.selectedItemPosition),
@@ -106,8 +106,7 @@ class AddingFragment : Fragment() {
         mBinding.saveButton.setOnClickListener {
             if (mBinding.edittextAdding.text.toString() != "") {
                 if (todoItemBundle != null) {
-                    mViewModel.deleteItemToList(todoItemBundle!!)
-                    mViewModel.addItemToList(changeTodoItem(todoItemBundle!!))
+                    mViewModel.editItemToList(editTodoItem(todoItemBundle!!))
                     findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
                 } else {
                     mViewModel.addItemToList(createNewTodoItem())
@@ -121,7 +120,7 @@ class AddingFragment : Fragment() {
     private fun deleteSetListenerInit() {
         mBinding.deleteButton.setOnClickListener {
             if (todoItemBundle != null) {
-                mViewModel.deleteItemToList(todoItemBundle!!)
+                mViewModel.deleteTodoItem(todoItemBundle!!.id)
                 findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
             } else findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
         }

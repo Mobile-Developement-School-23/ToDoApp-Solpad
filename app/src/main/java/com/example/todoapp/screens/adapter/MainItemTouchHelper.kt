@@ -1,4 +1,4 @@
-package com.example.todoapp.adapter
+package com.example.todoapp.screens.adapter
 
 
 import android.graphics.Canvas
@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
-import com.example.todoapp.adapter.MainAdapter
-import com.example.todoapp.model.TodoItemsRepository
 import com.example.todoapp.screens.main.MainFragmentViewModel
 import com.google.android.material.snackbar.Snackbar
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
@@ -33,11 +31,7 @@ class MainItemTouchHelper(
         val item = adapter.currentList[position]
         when(direction){
             ItemTouchHelper.LEFT ->{
-                adapter.notifyItemRemoved(TodoItemsRepository().getTodoItems().indexOf(item))
-                mViewModel.deleteItemFromList(item)
-                adapter.submitList(TodoItemsRepository().getTodoItems())
-                adapter.notifyDataSetChanged();
-
+                mViewModel.deleteTodoItem(item.id)
                 var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview_do)
                 Snackbar.make(recyclerView,"Отменить удаление?",Snackbar.LENGTH_LONG)
                     .setAction("Да",View.OnClickListener {
@@ -47,10 +41,7 @@ class MainItemTouchHelper(
                     }).show()
             }
             ItemTouchHelper.RIGHT ->{
-                item.flag = true
-                Log.e("positionSSSSSS",item.toString())
-                adapter.submitList(TodoItemsRepository().getTodoItems())
-                adapter.notifyDataSetChanged()
+
             }
         }
     }

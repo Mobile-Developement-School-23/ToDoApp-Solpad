@@ -1,38 +1,31 @@
 package com.example.todoapp.screens.main
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.model.TodoItem
-import com.example.todoapp.model.TodoItemsRepository
+import com.example.todoapp.repository.TodoItemsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainFragmentViewModel:ViewModel() {
+class MainFragmentViewModel(application: Application) :AndroidViewModel(application) {
 
-    var completedTask: MutableLiveData<Int>? = MutableLiveData()
-    private val todoItemsRepository = TodoItemsRepository()
+    private val todoItemsRepository = TodoItemsRepository(getApplication<Application>().applicationContext)
 
-    init {
-        countCompletedTask(todoItemsRepository.getTodoItems())
+    fun addItemToList(todoItem: TodoItem) = viewModelScope.launch(Dispatchers.IO) {
+        todoItemsRepository.addTodoItemNetwork(getApplication<Application>().applicationContext, todoItem, null)
     }
-
-    fun deleteItemFromList(item: TodoItem) = viewModelScope.launch {
-        todoItemsRepository.deleteTodoItems(item)
-
+    fun deleteTodoItem(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        todoItemsRepository.deleteTodoItemNetwork(getApplication<Application>().applicationContext, id)
     }
-    fun addItemToList(item: TodoItem) = viewModelScope.launch {
-        todoItemsRepository.setTodoItems(item)
+    fun getTodoItemsLiveData(): LiveData<List<TodoItem>> {
+        return todoItemsRepository.todoItemsLiveData
     }
-
-    // подсчет выполеных тасок
-    fun countCompletedTask(list: List<TodoItem>){
-        var count = 0
-        for(element in list){
-            if (element.flag == true) count++
-        }
-        completedTask?.postValue(count)
-
+    fun getListTodoItems() = viewModelScope.launch(Dispatchers.IO)  {
+        todoItemsRepository.getTodoItemsNetwork(getApplication<Application>().applicationContext)
     }
-
 
 }

@@ -7,18 +7,18 @@ import java.util.*
 class Utils {
     fun convertIdToImportance(positionId: Int): Importance{
         return when(positionId){
-            0 -> Importance.ORDINARY
+            0 -> Importance.BASIC
             1 -> Importance.LOW
-            2 -> Importance.URGENT
+            2 -> Importance.IMPORTANT
             else -> Importance.LOW
         }
     }
 
     fun convertImportanceToId(importance: Importance): Int{
         return when(importance){
-            Importance.ORDINARY -> 0
+            Importance.BASIC -> 0
             Importance.LOW -> 1
-            Importance.URGENT -> 2
+            Importance.IMPORTANT -> 2
             else -> 0
         }
     }

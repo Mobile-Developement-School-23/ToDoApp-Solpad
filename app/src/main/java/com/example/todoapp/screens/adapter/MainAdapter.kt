@@ -1,9 +1,7 @@
-package com.example.todoapp.adapter
+package com.example.todoapp.screens.adapter
 
 import MainViewHolder
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,13 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
-import com.example.todoapp.util.Utils
-import com.example.todoapp.databinding.TodoItemBinding
 import com.example.todoapp.model.Importance
 import com.example.todoapp.model.TodoItem
 import com.example.todoapp.util.ItemDiffCallback
@@ -46,6 +39,7 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
         holder.bind(getItem(position))
 
         onSetListenerButtonInfo(holder)
+        Log.e("AdapterPosition",position.toString())
         onSetListenerCheckBox(holder, position)
 
 //       клик для редактирования
@@ -65,11 +59,11 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
             holder.importanceItem.setImageResource(R.drawable.ic_arrow_to_down)
 
         }
-        if (getItem(position).importance == Importance.ORDINARY) {
+        if (getItem(position).importance == Importance.BASIC) {
             holder.importanceItem.visibility = View.GONE
         }
 
-        if (getItem(position).importance == Importance.URGENT) {
+        if (getItem(position).importance == Importance.IMPORTANT) {
             holder.importanceItem.visibility = View.VISIBLE
             holder.importanceItem.setImageResource(R.drawable.ic_priority)
         }
@@ -77,16 +71,16 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
 
         //checkbox
         if (getItem(position).flag == true) {
-            Log.e("position",holder.itemView.toString())
             holder.checkBoxItem.isChecked = true
             holder.textItem.paintFlags = holder.textItem.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
         }
 
-        if (getItem(position).importance == Importance.URGENT) {
+        if (getItem(position).importance == Importance.IMPORTANT) {
             val tint = ContextCompat.getColorStateList(holder.itemView.context,R.drawable.checkbox_extra_tint)
             val drawable = getDrawable(holder.itemView.context,R.drawable.checkbox_extra_drawable)
             holder.checkBoxItem.buttonDrawable = drawable
+
             holder.checkBoxItem.buttonTintList = tint
         } else{
             val tint = ContextCompat.getColorStateList(holder.itemView.context,R.drawable.checkbox_normal_tint)
@@ -97,8 +91,9 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
     }
     private fun onSetListenerCheckBox(holder: MainViewHolder, position: Int) {
         holder.checkBoxItem.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.e("AdapterBef",getItem(position).toString())
             getItem(position).flag = isChecked
-
+            Log.e("AdapterAft",getItem(position).toString())
             if (getItem(position).flag == true) {
                 holder.textItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             } else if (getItem(position).flag == false) {
