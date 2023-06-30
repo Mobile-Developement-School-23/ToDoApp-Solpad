@@ -27,11 +27,12 @@ import com.google.android.material.snackbar.Snackbar
 
 class MainFragment : Fragment() {
 
-    private lateinit var mViewModel: MainFragmentViewModel
-    private var _binding: FragmentMainBinding? = null
+
     private val mBinding get() = _binding!!
     private lateinit var adapterToDo: MainAdapter
 
+    private lateinit var mViewModel: MainFragmentViewModel
+    private var _binding: FragmentMainBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,30 +54,18 @@ class MainFragment : Fragment() {
         mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner){
             adapterToDo.submitList(it)
             adapterToDo.notifyDataSetChanged()
-            Log.e("ADAPTER",it.toString())
         }
     }
     //Инициализация всего в одной функции.
-    fun initialization(view: View) {
+    private fun initialization(view: View) {
         setRecyclerView()
-        setCompletedTask()
         setItemTouchHelper(view)
         setResourseObserver()
-    }
-
-    // установка количества выполненных задач(пока не работает)
-    private fun setCompletedTask() {
-        /*
-        mViewModel.completedTask?.observe(viewLifecycleOwner, Observer {
-
-            mBinding.completeTitle.text = "Выполнено — " + it.toString()
-        })
-
-         */
+        setSwipeRefresh()
     }
 
     // инициализация ресайклера
-    fun setRecyclerView() {
+    private fun setRecyclerView() {
         mBinding?.apply {
             adapterToDo = MainAdapter(
                 MainAdapter.OnClickListener { setOnClickListenerRV(it) },
@@ -131,9 +120,8 @@ class MainFragment : Fragment() {
         mViewModel.getResourseLiveData().observe(viewLifecycleOwner){
             when(it){
                 is Resourse.Error -> {
-                    Snackbar.make(mBinding.recyclerviewDo,"Ошибка, повторить?", Snackbar.LENGTH_LONG)
-                    .setAction("Да",View.OnClickListener {
-
+                    Snackbar.make(mBinding.recyclerviewDo,it.message.toString(), Snackbar.LENGTH_LONG)
+                    .setAction("Повторить",View.OnClickListener {
                     }).show()
                 }
                 is Resourse.Success -> {
@@ -149,5 +137,19 @@ class MainFragment : Fragment() {
 
     }
 
+    private fun setSwipeRefresh(){
+        mBinding.swipeRefresh.setOnRefreshListener {
+
+            mViewModel.getListTodoItems()
+
+            if (!mViewModel.checkInternetConnection()){
+                Snackbar.make(mBinding.recyclerviewDo,"Отсутствует интернет соединение",Snackbar.LENGTH_LONG)
+                    .setAction("Обновить",View.OnClickListener {
+                        mViewModel.getListTodoItems()
+                    }).show()
+            }
+            mBinding.swipeRefresh.isRefreshing = false
+        }
+    }
 
 }

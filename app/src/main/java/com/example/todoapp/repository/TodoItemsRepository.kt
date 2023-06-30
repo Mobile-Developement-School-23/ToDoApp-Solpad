@@ -9,9 +9,11 @@ import com.example.todoapp.model.Resourse
 import com.example.todoapp.model.TodoItem
 import com.example.todoapp.network.RetrofitRepository
 import com.example.todoapp.network.RevisionService
+import com.example.todoapp.network.SynchronizationData
 import com.example.todoapp.network.model.GetListItemsNetwork
 import com.example.todoapp.network.model.SetItemRequest
 import com.example.todoapp.network.model.SetItemResponse
+import com.example.todoapp.network.model.SetItemsRequest
 import com.example.todoapp.network.model.TodoItemNetwork
 import com.example.todoapp.network.model.TodoItemNetwork.Companion.mapToTodoItemNetwork
 import com.example.todoapp.util.CheckInternetConnection
@@ -66,6 +68,7 @@ class TodoItemsRepository(
         val addItem: TodoItem = if (id != null) todoItem
         else todoItem.copy(id = makingId())
         database.getDao().addTodoItem(addItem)
+        revisionService.setRevisionDatabase(revisionService.getRevisionNetwork() + 1)
     }
 
     suspend fun addTodoItemNetwork(context: Context, todoItem: TodoItem, id: String?) {
@@ -110,8 +113,10 @@ class TodoItemsRepository(
     suspend fun getTodoItems() {
         if (checkInternetConnectionGet.checkInternet(context)) {
             getTodoItemsNetwork(context)
+            SynchronizationData(context).synchronizationDatabase(database.getDao().getAll(),todoItemsLiveData.value!!)
         } else {
             getTodoItemsDatabase()
+            SynchronizationData(context).synchronizationDatabase(database.getDao().getAll(),todoItemsLiveData.value!!)
 
         }
     }
@@ -133,8 +138,11 @@ class TodoItemsRepository(
 
 
     suspend fun getTodoItemsNetwork(context: Context) {
-        getTodoItemsNetworkFlow(context).collect {
+        getTodoItemsNetworkFlow(context).catch {
+            mResourseRequest.postValue(Resourse.Error(mapErrors(it)))
+        }.collect {
             setTodoItemsLiveData(it)
+            mResourseRequest.postValue(Resourse.Success())
         }
     }
 
@@ -145,10 +153,10 @@ class TodoItemsRepository(
                     context,
                     RetrofitRepository.getRetrofit(context).getListTodoItems()
                 )
-
-            if (checkerGetResponse(response))
+            if (checkerGetResponse(response)) {
+                revisionService.setRevisionNetwork(response.body()!!.revision)
                 emit(response.body()!!.listItemsNetwork.map { it.mapToTodoItem() })
-
+            }
         }.flowOn(Dispatchers.IO)
     }
 
@@ -167,7 +175,8 @@ class TodoItemsRepository(
     }
     suspend fun deleteTodoItemDatabase(todoItem: TodoItem) {
         database.getDao().deleteTodoItem(todoItem)
-        //setTodoItemsLiveData(database.getDao().getAll())
+        revisionService.setRevisionDatabase(revisionService.getRevisionNetwork() + 1)
+
     }
 
     suspend fun deleteTodoItemNetwork(context: Context, id: String) {
@@ -216,7 +225,7 @@ class TodoItemsRepository(
     }
     suspend fun editTodoItemDatabase(todoItem: TodoItem) {
         database.getDao().editTodoItem(todoItem)
-        //setTodoItemsLiveData(database.getDao().getAll())
+        revisionService.setRevisionDatabase(revisionService.getRevisionNetwork() + 1)
 
     }
 
@@ -257,12 +266,46 @@ class TodoItemsRepository(
     }
 
 
+    //
+    // Блок кода, обрабатывающий patch
+    //
+
+    suspend fun patchTodoItemNetwork(context: Context, items: List<TodoItem>) {
+        patchTodoItemFlow(context, items).catch {
+            mResourseRequest.postValue(Resourse.Error(mapErrors(it)))
+        }.collect {
+            setTodoItemsLiveData(it)
+            mResourseRequest.postValue(Resourse.Success())
+        }
+    }
+
+    private suspend fun patchTodoItemFlow(
+        context: Context,
+        todoItems: List<TodoItem>
+    ): Flow<List<TodoItem>> {
+
+        val todoItemsNetwork = todoItems.map { it.mapToTodoItemNetwork(it.id) }
+        var setItemsRequest = SetItemsRequest(todoItemsNetwork = todoItemsNetwork)
+
+        return flow {
+            val revision = revisionService.getRevisionDatabase() - 1
+            val response = if (checkInternetConnectionGet.checkInternet(context))
+                RetrofitRepository.getRetrofit(context).patchTodoItem(revision.toString(),setItemsRequest)
+            else throw IOException("Нет интернет соединения")
+
+            if (checkerGetResponse(response))
+                emit(response.body()!!.listItemsNetwork.map { it.mapToTodoItem() })
+
+        }.flowOn(Dispatchers.IO)
+    }
+
+
     private fun makingId(): String = UUID.randomUUID().toString()
 
     private fun mapErrors(e: Throwable) = when (e) {
-        is UnknownHostException -> "wrong"
-        is IOException -> "no internet"
-        else -> "sthm"
+        is UnknownHostException -> "Ошибка"
+        is IOException -> "Отстутствует интернет"
+        else -> "Ошибка"
     }
 
     suspend fun <T> checkerResponse(
@@ -294,5 +337,8 @@ class TodoItemsRepository(
             } else throw UnknownHostException("Тело запроса - null")
         } else throw UnknownHostException(response.message())
     }
+
+
+    fun checkInternetConnection(context: Context) = checkInternetConnectionGet.checkInternet(context)
 
 }

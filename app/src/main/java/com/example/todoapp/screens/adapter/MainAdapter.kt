@@ -62,7 +62,6 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
         holder.bind(getItem(position))
 
         onSetListenerButtonInfo(holder)
-        Log.e("AdapterPosition",position.toString())
         onSetListenerCheckBox(holder, position)
 
 //       клик для редактирования

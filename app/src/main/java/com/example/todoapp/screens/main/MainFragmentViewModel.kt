@@ -39,4 +39,6 @@ class MainFragmentViewModel(application: Application) :AndroidViewModel(applicat
     fun getResourseLiveData(): LiveData<Resourse> {
         return todoItemsRepository.resourseRequest
     }
+
+    fun checkInternetConnection() = todoItemsRepository.checkInternetConnection(getApplication<Application>().applicationContext)
 }

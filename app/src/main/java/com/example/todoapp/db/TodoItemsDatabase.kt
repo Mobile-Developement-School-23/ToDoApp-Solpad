@@ -25,9 +25,6 @@ abstract class TodoItemsDatabase:RoomDatabase() {
         }
 
         private fun createDatabase(context: Context): TodoItemsDatabase {
-
-            Log.e("cr","cre")
-
             return Room.databaseBuilder(
                 context.applicationContext,
                 TodoItemsDatabase::class.java,
