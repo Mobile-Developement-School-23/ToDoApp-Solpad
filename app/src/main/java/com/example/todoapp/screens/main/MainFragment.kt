@@ -1,7 +1,6 @@
 package com.example.todoapp.screens.main
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,10 +19,8 @@ import com.example.todoapp.model.Resourse
 import com.example.todoapp.model.TodoItem
 import com.example.todoapp.screens.adapter.MainAdapter
 import com.example.todoapp.screens.adapter.MainItemTouchHelper
+import com.example.todoapp.util.Utils
 import com.google.android.material.snackbar.Snackbar
-import com.yandex.authsdk.YandexAuthLoginOptions
-import com.yandex.authsdk.YandexAuthOptions
-import com.yandex.authsdk.YandexAuthSdk
 
 
 class MainFragment : Fragment() {
@@ -53,7 +50,6 @@ class MainFragment : Fragment() {
 
         mViewModel.getListTodoItems()
         mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner){
-            Log.e("observe","change")
             adapterToDo.submitList(it)
             adapterToDo.notifyDataSetChanged()
         }
@@ -71,7 +67,8 @@ class MainFragment : Fragment() {
         mBinding?.apply {
             adapterToDo = MainAdapter(
                 MainAdapter.OnClickListener { setOnClickListenerRV(it) },
-                MainAdapter.OnLongClickListener { item, view -> setOnLongClickListener(item, view) })
+                MainAdapter.OnLongClickListener { item, view -> setOnLongClickListener(item, view) },
+                MainAdapter.OnCheckBoxClickListener { item, flag, view -> setOnCheckBoxListener(item, flag,view) })
             var linearLayoutManager = LinearLayoutManager(context).apply {
                 reverseLayout = true
             }
@@ -89,11 +86,18 @@ class MainFragment : Fragment() {
             bundle
         )
     }
-
+    private fun setOnCheckBoxListener(item:TodoItem,flag: Boolean,view: View){
+        mViewModel.editTodoItem(editTodoItem(item,flag))
+    }
     private fun setOnLongClickListener(item: TodoItem, view: View) {
         showPopUpMenu(item,view)
     }
 
+    private fun editTodoItem(todoItem: TodoItem,flag:Boolean): TodoItem {
+        return todoItem.copy(
+            flag = flag
+        )
+    }
     private fun showPopUpMenu(item: TodoItem,view: View){
 
         var popupMenu = context?.let { PopupMenu(it, view) }

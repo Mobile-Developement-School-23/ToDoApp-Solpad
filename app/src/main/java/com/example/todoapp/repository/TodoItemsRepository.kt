@@ -46,8 +46,6 @@ class TodoItemsRepository(
 
     private fun setTodoItemsLiveData(todoItems: List<TodoItem>) {
         mTodoItemsLiveData.postValue(todoItems)
-        Log.e("set",todoItems.toString())
-
     }
 
 
@@ -244,8 +242,6 @@ class TodoItemsRepository(
     ): Flow<List<TodoItem>> {
 
         val todoItemNetwork: TodoItemNetwork = todoItem.mapToTodoItemNetwork(todoItem.id)
-        Log.e("deathITEM", todoItem.deadline.toString())
-        Log.e("deathNET", Utils().convertLongDeathlineToString(todoItemNetwork.deadline))
         val setItemRequest = SetItemRequest(todoItemNetwork = todoItemNetwork)
         return flow {
 

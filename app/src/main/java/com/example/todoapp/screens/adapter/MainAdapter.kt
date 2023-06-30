@@ -17,7 +17,11 @@ import com.example.todoapp.model.TodoItem
 import com.example.todoapp.util.ItemDiffCallback
 import com.example.todoapp.util.Utils
 
-class MainAdapter(private val onClickListener: OnClickListener, private val onLongClickListener: OnLongClickListener) :
+class MainAdapter(
+    private val onClickListener: OnClickListener,
+    private val onLongClickListener: OnLongClickListener,
+    private val onCheckBoxClickListener: OnCheckBoxClickListener,
+) :
     ListAdapter<TodoItem, MainAdapter.MainViewHolder>(ItemDiffCallback()) {
 
 
@@ -49,7 +53,9 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
     class OnLongClickListener(val longClickListener: (item: TodoItem,view:View) -> Unit) {
         fun onClick(item: TodoItem, itemView: View) = longClickListener(item,itemView)
     }
-
+    class OnCheckBoxClickListener(val checkBoxClickListener: (item: TodoItem,flag: Boolean,itemView: View) -> Unit) {
+        fun onClick(item: TodoItem, flag: Boolean,itemView: View) = checkBoxClickListener(item,flag,itemView)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.todo_item, parent, false)
@@ -62,11 +68,21 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
         holder.bind(getItem(position))
 
         onSetListenerButtonInfo(holder)
-        onSetListenerCheckBox(holder, position)
+
 
 //       клик для редактирования
         holder.itemView.setOnClickListener {
             onClickListener.onClick(getItem(position))
+        }
+
+        // обработчик нажатия на чекбокс
+        holder.checkBoxItem.setOnCheckedChangeListener{ buttonView, isChecked ->
+           //onCheckBoxClickListener.onClick(getItem(position),isChecked,holder.itemView)
+            if (getItem(position).flag == true) {
+                holder.textItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            } else if (getItem(position).flag == false) {
+                holder.textItem.paintFlags = Paint.ANTI_ALIAS_FLAG
+            }
         }
 
         //лонгклик
@@ -110,18 +126,6 @@ class MainAdapter(private val onClickListener: OnClickListener, private val onLo
         }
 
 
-    }
-    private fun onSetListenerCheckBox(holder: MainViewHolder, position: Int) {
-        holder.checkBoxItem.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.e("AdapterBef",getItem(position).toString())
-            getItem(position).flag = isChecked
-            Log.e("AdapterAft",getItem(position).toString())
-            if (getItem(position).flag == true) {
-                holder.textItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            } else if (getItem(position).flag == false) {
-                holder.textItem.paintFlags = Paint.ANTI_ALIAS_FLAG
-            }
-        }
     }
     private fun onSetListenerButtonInfo(holder: MainViewHolder) {
         holder.infoItem.setOnClickListener {
