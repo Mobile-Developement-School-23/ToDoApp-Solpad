@@ -34,7 +34,7 @@ class MainFragmentViewModel(application: Application) :AndroidViewModel(applicat
 
 
     fun getTodoItemsLiveData(): LiveData<List<TodoItem>> {
-        return todoItemsRepository.todoItemsLiveData
+        return todoItemsRepository.mTodoItemsLiveData
     }
     fun getResourseLiveData(): LiveData<Resourse> {
         return todoItemsRepository.resourseRequest

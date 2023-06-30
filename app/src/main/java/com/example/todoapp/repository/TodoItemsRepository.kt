@@ -17,6 +17,7 @@ import com.example.todoapp.network.model.SetItemsRequest
 import com.example.todoapp.network.model.TodoItemNetwork
 import com.example.todoapp.network.model.TodoItemNetwork.Companion.mapToTodoItemNetwork
 import com.example.todoapp.util.CheckInternetConnection
+import com.example.todoapp.util.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import retrofit2.Response
@@ -30,7 +31,7 @@ class TodoItemsRepository(
 ) {
 
 
-    private val mTodoItemsLiveData: MutableLiveData<List<TodoItem>> = MutableLiveData()
+    val mTodoItemsLiveData: MutableLiveData<List<TodoItem>> = MutableLiveData()
     val todoItemsLiveData: LiveData<List<TodoItem>> = mTodoItemsLiveData
 
     private val mResourseRequest = MutableLiveData<Resourse>()
@@ -113,10 +114,10 @@ class TodoItemsRepository(
     suspend fun getTodoItems() {
         if (checkInternetConnectionGet.checkInternet(context)) {
             getTodoItemsNetwork(context)
-            SynchronizationData(context).synchronizationDatabase(database.getDao().getAll(),todoItemsLiveData.value!!)
+            SynchronizationData(context).synchronizationData(todoItemsLiveData.value?:listOf<TodoItem>())
         } else {
             getTodoItemsDatabase()
-            SynchronizationData(context).synchronizationDatabase(database.getDao().getAll(),todoItemsLiveData.value!!)
+            SynchronizationData(context).synchronizationData(todoItemsLiveData.value?:listOf<TodoItem>())
 
         }
     }
@@ -226,7 +227,6 @@ class TodoItemsRepository(
     suspend fun editTodoItemDatabase(todoItem: TodoItem) {
         database.getDao().editTodoItem(todoItem)
         revisionService.setRevisionDatabase(revisionService.getRevisionNetwork() + 1)
-
     }
 
     suspend fun editTodoItemNetwork(context: Context, item: TodoItem) {
@@ -244,6 +244,8 @@ class TodoItemsRepository(
     ): Flow<List<TodoItem>> {
 
         val todoItemNetwork: TodoItemNetwork = todoItem.mapToTodoItemNetwork(todoItem.id)
+        Log.e("deathITEM", todoItem.deadline.toString())
+        Log.e("deathNET", Utils().convertLongDeathlineToString(todoItemNetwork.deadline))
         val setItemRequest = SetItemRequest(todoItemNetwork = todoItemNetwork)
         return flow {
 

@@ -1,6 +1,7 @@
 package com.example.todoapp.screens.main
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,15 +15,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
-import com.example.todoapp.screens.adapter.MainAdapter
 import com.example.todoapp.databinding.FragmentMainBinding
 import com.example.todoapp.model.Resourse
 import com.example.todoapp.model.TodoItem
-import com.example.todoapp.network.model.GetListItemsNetwork
-import com.example.todoapp.repository.TodoItemsRepository
+import com.example.todoapp.screens.adapter.MainAdapter
 import com.example.todoapp.screens.adapter.MainItemTouchHelper
-import com.example.todoapp.util.CheckInternetConnection
 import com.google.android.material.snackbar.Snackbar
+import com.yandex.authsdk.YandexAuthLoginOptions
+import com.yandex.authsdk.YandexAuthOptions
+import com.yandex.authsdk.YandexAuthSdk
 
 
 class MainFragment : Fragment() {
@@ -52,6 +53,7 @@ class MainFragment : Fragment() {
 
         mViewModel.getListTodoItems()
         mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner){
+            Log.e("observe","change")
             adapterToDo.submitList(it)
             adapterToDo.notifyDataSetChanged()
         }
@@ -150,6 +152,10 @@ class MainFragment : Fragment() {
             }
             mBinding.swipeRefresh.isRefreshing = false
         }
+    }
+    private fun setYandexAuth(){
+
+
     }
 
 }

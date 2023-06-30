@@ -1,9 +1,11 @@
 package com.example.todoapp.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.todoapp.model.TodoItem
 import com.example.todoapp.network.RevisionService
 import com.example.todoapp.network.model.SetItemResponse
+import com.example.todoapp.util.Utils
 
 class ConverterRepository( private val revisionService: RevisionService ) {
 
@@ -48,6 +50,7 @@ class ConverterRepository( private val revisionService: RevisionService ) {
     fun converterEditTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val editItem = body.todoItemNetwork.mapToTodoItem()
+        Log.e("conv",Utils().convertLongDeathlineToString(editItem.deadline))
         val todoItems = itemLiveData.value
         var newList = todoItems?.toMutableList()
         if (todoItems != null) {

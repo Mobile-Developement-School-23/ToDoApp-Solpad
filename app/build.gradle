@@ -20,6 +20,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [YANDEX_CLIENT_ID:"7557d9e508ff4ffa8316bd4062745783"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,6 +54,7 @@ dependencies {
     //UI libs
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.4'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "com.yandex.android:authsdk:2.5.1"
 
     // Network
     implementation "com.squareup.okhttp3:okhttp:4.10.0"

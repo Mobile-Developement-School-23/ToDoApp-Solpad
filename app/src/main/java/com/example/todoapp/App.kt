@@ -19,9 +19,8 @@ class App : Application() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val request = PeriodicWorkRequestBuilder<WorkManagerDatabase>(10,TimeUnit.SECONDS)
+        val request = PeriodicWorkRequestBuilder<WorkManagerDatabase>(8,TimeUnit.HOURS)
             .setConstraints(constraints).build()
-        Log.e("set","request")
         val workManagerDatabase = WorkManager.getInstance(applicationContext)
         workManagerDatabase.enqueueUniquePeriodicWork(
                 "hour_worker",

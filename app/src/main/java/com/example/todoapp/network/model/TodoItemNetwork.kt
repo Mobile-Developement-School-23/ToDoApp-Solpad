@@ -6,38 +6,37 @@ import com.google.gson.annotations.SerializedName
 
 data class TodoItemNetwork(
     @SerializedName("id")
-    var id: String = "13",
+    var id: String = "1",
     @SerializedName("text")
-    val text: String = "text",
+    val text: String = "content",
     @SerializedName("importance")
     val importance: String = "low",
     @SerializedName("deadline")
-    val deadline: Long = 100000,
+    val deadline: Long = 100000000,
     @SerializedName("done")
     val done: Boolean = false,
     @SerializedName("color")
     val color: String = "#FFFFFF",
     @SerializedName("created_at")
-    val createdAt: Long = 100000,
+    val createdAt: Long = 100000000,
     @SerializedName("changed_at")
-    val changedAt: Long = 100000,
+    val changedAt: Long = 100000000,
     @SerializedName("last_updated_by")
-    val lastUpdatedBy: String = "model"
+    val lastUpdatedBy: String = "kek"
 ) {
-    fun mapToTodoItem() = TodoItem(
-        id, text, Importance.valueOf(importance.uppercase()), done, deadline, createdAt, changedAt
-    )
+    fun mapToTodoItem() =
+        TodoItem( id, text, Importance.valueOf(importance.uppercase()), done, createdAt, changedAt,deadline)
 
     companion object {
         fun TodoItem.mapToTodoItemNetwork(id: String) = TodoItemNetwork(
             id,
-            content,
-            importance.name.lowercase(),
-            deadline,
-            flag,
+            text = content,
+            importance = importance.name.lowercase(),
+            deadline = deadline,
+            done = flag,
             "#FFFFFF",
-            dateCreated,
-            dateChanged,
+            createdAt = dateCreated,
+            changedAt = dateChanged,
             "0"
         )
     }
