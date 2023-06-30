@@ -1,19 +1,17 @@
 package com.example.todoapp.db
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.todoapp.db.model.TodoItem
+import com.example.todoapp.model.TodoItem
 
 @Database(
     entities = [TodoItem::class],
     version = 1
 )
 abstract class TodoItemsDatabase:RoomDatabase() {
-
-    private lateinit var applicationContext: Context
-
 
     abstract fun getDao():ItemRoomDao
 
@@ -26,11 +24,15 @@ abstract class TodoItemsDatabase:RoomDatabase() {
             instance ?: createDatabase(context).also { instance = it }
         }
 
-        private fun createDatabase(context: Context) =
-            Room.databaseBuilder(
+        private fun createDatabase(context: Context): TodoItemsDatabase {
+
+            Log.e("cr","cre")
+
+            return Room.databaseBuilder(
                 context.applicationContext,
                 TodoItemsDatabase::class.java,
                 "item_db.db"
             ).build()
+        }
     }
 }

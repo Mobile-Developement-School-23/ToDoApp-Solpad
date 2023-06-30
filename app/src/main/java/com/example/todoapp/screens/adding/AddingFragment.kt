@@ -120,7 +120,7 @@ class AddingFragment : Fragment() {
     private fun deleteSetListenerInit() {
         mBinding.deleteButton.setOnClickListener {
             if (todoItemBundle != null) {
-                mViewModel.deleteTodoItem(todoItemBundle!!.id)
+                mViewModel.deleteTodoItem(todoItemBundle!!,todoItemBundle!!.id)
                 findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
             } else findNavController().navigate(R.id.action_addingFragment_to_mainFragment)
         }

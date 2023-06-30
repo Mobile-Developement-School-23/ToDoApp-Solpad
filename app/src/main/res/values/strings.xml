@@ -9,6 +9,7 @@
     <string name="delete">Удалить</string>
     <string name="edit">Редактировать</string>
     <string name="New">Новое</string>
+    <string name="repeated">Повторить</string>
     <string-array name="importance">
         <item>Нет</item>
         <item>Низкий</item>

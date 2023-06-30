@@ -16,9 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.screens.adapter.MainAdapter
 import com.example.todoapp.databinding.FragmentMainBinding
+import com.example.todoapp.model.Resourse
 import com.example.todoapp.model.TodoItem
+import com.example.todoapp.network.model.GetListItemsNetwork
 import com.example.todoapp.repository.TodoItemsRepository
 import com.example.todoapp.screens.adapter.MainItemTouchHelper
+import com.example.todoapp.util.CheckInternetConnection
+import com.google.android.material.snackbar.Snackbar
 
 
 class MainFragment : Fragment() {
@@ -27,6 +31,7 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val mBinding get() = _binding!!
     private lateinit var adapterToDo: MainAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,9 +51,9 @@ class MainFragment : Fragment() {
 
         mViewModel.getListTodoItems()
         mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner){
-            Log.e("observ",it.toString())
             adapterToDo.submitList(it)
             adapterToDo.notifyDataSetChanged()
+            Log.e("ADAPTER",it.toString())
         }
     }
     //Инициализация всего в одной функции.
@@ -56,7 +61,7 @@ class MainFragment : Fragment() {
         setRecyclerView()
         setCompletedTask()
         setItemTouchHelper(view)
-        //setItemTouchHelper(view = view,adapter = adapterToDo, item = item)
+        setResourseObserver()
     }
 
     // установка количества выполненных задач(пока не работает)
@@ -113,7 +118,7 @@ class MainFragment : Fragment() {
                     true
                 }
                 R.id.menu_delete -> {
-                    mViewModel.deleteTodoItem(item.id)
+                    mViewModel.deleteTodoItem(item,item.id)
                     true
                 }
                 else -> false
@@ -122,39 +127,27 @@ class MainFragment : Fragment() {
         popupMenu?.show();
     }
 
-    fun setItemTouchHelper(view: View){
+    private fun setResourseObserver(){
+        mViewModel.getResourseLiveData().observe(viewLifecycleOwner){
+            when(it){
+                is Resourse.Error -> {
+                    Snackbar.make(mBinding.recyclerviewDo,"Ошибка, повторить?", Snackbar.LENGTH_LONG)
+                    .setAction("Да",View.OnClickListener {
+
+                    }).show()
+                }
+                is Resourse.Success -> {
+                    Log.e("good","Good")
+                }
+            }
+        }
+    }
+    private fun setItemTouchHelper(view: View){
         var simpleItemTouchCallback = MainItemTouchHelper(adapterToDo,mViewModel,view)
         var itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(mBinding.recyclerviewDo)
 
     }
-/*
-    private fun setItemTouchHelper(item: TodoItem,adapter:MainAdapter,view: View,recyclerView: RecyclerView){
-        val itemTouchCallback = MainItemTouchHelper( view,
-            onSwipeLeft = { position ->
-                val item = adapter.getItem(position)
-                adapter.notifyItemRemoved(TodoItemsRepository().getTodoItems().indexOf(item))
-                mViewModel.deleteItemFromList(item)
-                adapter.submitList(TodoItemsRepository().getTodoItems())
-                adapter.notifyDataSetChanged();
-                var recyclerView = mBinding.recyclerviewDo
-                Snackbar.make(recyclerView,"Отменить удаление?", Snackbar.LENGTH_LONG)
-                    .setAction("Да",View.OnClickListener {
-                        mViewModel.addItemToList(item)
-                        adapter.notifyItemInserted(position)
-                        adapter.notifyDataSetChanged()
-                    }).show()
-            },
-            onSwipeRight = {position ->
-                item.flag = true
-                adapter.submitList(TodoItemsRepository().getTodoItems())
-                adapter.notifyDataSetChanged()
-            }
-        )
-        var itemTouchHelper = ItemTouchHelper(itemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(mBinding.recyclerviewDo)
 
-    }
 
- */
 }

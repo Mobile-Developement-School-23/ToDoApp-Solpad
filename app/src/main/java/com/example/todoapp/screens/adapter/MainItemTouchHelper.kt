@@ -11,6 +11,7 @@ import com.example.todoapp.R
 import com.example.todoapp.screens.main.MainFragmentViewModel
 import com.google.android.material.snackbar.Snackbar
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import okhttp3.internal.notify
 
 
 class MainItemTouchHelper(
@@ -31,11 +32,12 @@ class MainItemTouchHelper(
         val item = adapter.currentList[position]
         when(direction){
             ItemTouchHelper.LEFT ->{
-                mViewModel.deleteTodoItem(item.id)
+                mViewModel.deleteTodoItem(item,item.id)
+                adapter.notifyDataSetChanged()
                 var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview_do)
                 Snackbar.make(recyclerView,"Отменить удаление?",Snackbar.LENGTH_LONG)
                     .setAction("Да",View.OnClickListener {
-                        mViewModel.addItemToList(item)
+                        mViewModel.addTodoItem(item)
                         adapter.notifyItemInserted(position)
                         adapter.notifyDataSetChanged()
                     }).show()

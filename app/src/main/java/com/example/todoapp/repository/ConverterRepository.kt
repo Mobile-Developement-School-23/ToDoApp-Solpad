@@ -8,7 +8,7 @@ import com.example.todoapp.network.model.SetItemResponse
 class ConverterRepository( private val revisionService: RevisionService ) {
 
     fun converterAddTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
-        revisionService.setRevision(body.revision)
+        revisionService.setRevisionNetwork(body.revision)
         val newItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
         if (todoItems != null) {
@@ -30,7 +30,7 @@ class ConverterRepository( private val revisionService: RevisionService ) {
     }
 
     fun converterDeleteTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
-        revisionService.setRevision(body.revision)
+        revisionService.setRevisionNetwork(body.revision)
         val deletedItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
         if (todoItems != null) {
@@ -46,7 +46,7 @@ class ConverterRepository( private val revisionService: RevisionService ) {
     }
 
     fun converterEditTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
-        revisionService.setRevision(body.revision)
+        revisionService.setRevisionNetwork(body.revision)
         val editItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
         var newList = todoItems?.toMutableList()
