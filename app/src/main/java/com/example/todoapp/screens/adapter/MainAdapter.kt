@@ -50,11 +50,11 @@ class MainAdapter(
         fun onClick(item: TodoItem) = clickListener(item)
     }
 
-    class OnLongClickListener(val longClickListener: (item: TodoItem,view:View) -> Unit) {
+    class OnLongClickListener(val longClickListener: (item: TodoItem, view:View) -> Unit) {
         fun onClick(item: TodoItem, itemView: View) = longClickListener(item,itemView)
     }
-    class OnCheckBoxClickListener(val checkBoxClickListener: (item: TodoItem,flag: Boolean,itemView: View) -> Unit) {
-        fun onClick(item: TodoItem, flag: Boolean,itemView: View) = checkBoxClickListener(item,flag,itemView)
+    class OnCheckBoxClickListener(val checkBoxClickListener: (item: TodoItem, flag: Boolean, itemView: View) -> Unit) {
+        fun onClick(item: TodoItem, flag: Boolean, itemView: View) = checkBoxClickListener(item,flag,itemView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {

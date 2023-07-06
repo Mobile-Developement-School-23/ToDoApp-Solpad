@@ -1,6 +1,5 @@
 package com.example.todoapp.network
 
-import com.example.todoapp.model.TodoItem
 import com.example.todoapp.network.model.GetListItemsNetwork
 import com.example.todoapp.network.model.SetItemRequest
 import com.example.todoapp.network.model.SetItemResponse

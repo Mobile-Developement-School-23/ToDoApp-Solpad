@@ -3,19 +3,21 @@ package com.example.todoapp.network
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.todoapp.db.TodoItemsDatabase
+import com.example.todoapp.Application
 import com.example.todoapp.repository.TodoItemsRepository
+import javax.inject.Inject
 
-class WorkManagerDatabase(appContext: Context, params: WorkerParameters ): CoroutineWorker(appContext, params) {
-    var context = appContext
+class SynchronizationWorker(appContext: Context, params: WorkerParameters ): CoroutineWorker(appContext, params) {
+
+
+    @Inject
+    lateinit var repository:TodoItemsRepository
     override suspend fun doWork(): Result =
         try {
-            val repository = TodoItemsRepository(context, TodoItemsDatabase(context))
-            repository.getTodoItemsNetwork(context)
+            repository.getTodoItemsNetwork()
             Result.success()
         } catch (e:InterruptedException){
             Result.failure()
         }
-
 
 }

@@ -71,6 +71,7 @@
             android:layout_marginTop="18dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
             >
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScroll"
             android:layout_width="match_parent"

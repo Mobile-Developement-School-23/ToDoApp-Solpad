@@ -5,8 +5,9 @@ import android.content.SharedPreferences
 import com.example.todoapp.R
 import com.example.todoapp.util.REVISION
 import com.example.todoapp.util.REVISION_DATABASE
+import javax.inject.Inject
 
-class RevisionService(context: Context) {
+class RevisionService @Inject constructor(context: Context) {
     private var sharedPreferences: SharedPreferences =
         context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
 

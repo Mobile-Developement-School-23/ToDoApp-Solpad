@@ -1,5 +1,6 @@
 package com.example.todoapp.screens.adding
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,26 +8,41 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.todoapp.Application
 import com.example.todoapp.R
 import com.example.todoapp.util.Utils
 import com.example.todoapp.databinding.FragmentAddingBinding
+import com.example.todoapp.di.adding.AddingFragmentComponent
 import com.example.todoapp.model.TodoItem
 import com.google.android.material.datepicker.MaterialDatePicker
+import javax.inject.Inject
 
 
 class AddingFragment : Fragment() {
 
     private var _binding: FragmentAddingBinding? = null
     private val mBinding get() = _binding!!
+
+
+
+    @Inject
+    lateinit var addingViewModelFactory: AddingFragmentViewModelFactory
     private lateinit var mViewModel: AddingFragmentViewModel
+
+    private lateinit var addingFragmentComponent: AddingFragmentComponent
 
     // item из Bundle
     var todoItemBundle: TodoItem? = null
-
     var deathline: Long = 0L
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
+        addingFragmentComponent = (requireContext().applicationContext as Application).appComponent.addingFragmentComponent().create()
+        addingFragmentComponent.inject(this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,15 +51,14 @@ class AddingFragment : Fragment() {
 
         // получение пргумента из Bundle
         val arguments = arguments
-        if (arguments != null) {
-            todoItemBundle = arguments.get("item") as TodoItem
-        }
+        if (arguments != null) todoItemBundle = arguments.get("item") as TodoItem
+
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mViewModel = ViewModelProvider(this)[AddingFragmentViewModel::class.java]
+        mViewModel = ViewModelProvider(this, addingViewModelFactory)[AddingFragmentViewModel::class.java]
         initialization()
     }
 

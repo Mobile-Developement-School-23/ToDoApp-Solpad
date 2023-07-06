@@ -1,20 +1,18 @@
 package com.example.todoapp.network
 
 import android.content.Context
+import com.example.todoapp.di.app.AppScope
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
 
-class AuthInterceptor(context: Context): Interceptor {
-    val revisionService = RevisionService(context)
-    var token = "glor"
-
+@AppScope
+class AuthInterceptor @Inject constructor(): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        var interceptBuilder = chain.request().newBuilder().addHeader("Authorization","Bearer $token" )
+        val requestBuilder =
+            chain.request().newBuilder().addHeader("Authorization", "Bearer glor")
 
-        revisionService.getRevisionNetwork().let { revision -> interceptBuilder .addHeader("X-Last-Known-Revision", revision.toString())
-        }
-
-        return chain.proceed(interceptBuilder.build())
+        return chain.proceed(requestBuilder.build())
     }
 
 }

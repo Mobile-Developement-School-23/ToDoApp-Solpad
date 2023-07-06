@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Utils {
-    fun convertIdToImportance(positionId: Int): Importance{
+    fun convertIdToImportance(positionId: Int): Importance {
         return when(positionId){
             0 -> Importance.BASIC
             1 -> Importance.LOW

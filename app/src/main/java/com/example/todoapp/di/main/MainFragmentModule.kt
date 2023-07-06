@@ -1,4 +1,4 @@
-package com.example.todoapp.di
+package com.example.todoapp.di.main
 
 import dagger.Module
 

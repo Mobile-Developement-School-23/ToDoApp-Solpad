@@ -1,6 +1,8 @@
 package com.example.todoapp.screens.main
 
 
+import android.content.Context
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,33 +12,49 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.todoapp.Application
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmentMainBinding
-import com.example.todoapp.model.Resourse
+import com.example.todoapp.di.main.MainFragmentComponent
+import com.example.todoapp.model.Resource
 import com.example.todoapp.model.TodoItem
+import com.example.todoapp.network.model.SynchronizationWorkerFactory
 import com.example.todoapp.screens.adapter.MainAdapter
 import com.example.todoapp.screens.adapter.MainItemTouchHelper
-import com.example.todoapp.util.Utils
+import com.example.todoapp.screens.adding.AddingFragmentViewModel
+import com.example.todoapp.screens.adding.AddingFragmentViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class MainFragment : Fragment() {
-
-
+    private var _binding: FragmentMainBinding? = null
     private val mBinding get() = _binding!!
+
     private lateinit var adapterToDo: MainAdapter
 
+    @Inject
+    lateinit var mainViewModelFactory: MainFragmentViewModelFactory
     private lateinit var mViewModel: MainFragmentViewModel
-    private var _binding: FragmentMainBinding? = null
+    private lateinit var mainFragmentComponent: MainFragmentComponent
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainFragmentComponent = (requireContext().applicationContext as Application).appComponent.mainFragmentComponent().create()
+        mainFragmentComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(this)[MainFragmentViewModel::class.java]
+        mViewModel = ViewModelProvider(this, mainViewModelFactory)[MainFragmentViewModel::class.java]
         _binding = FragmentMainBinding.inflate(layoutInflater, container, false)
         return mBinding.root
     }
@@ -60,6 +78,7 @@ class MainFragment : Fragment() {
         setItemTouchHelper(view)
         setResourseObserver()
         setSwipeRefresh()
+        setInternetStatusUi()
     }
 
     // инициализация ресайклера
@@ -86,19 +105,19 @@ class MainFragment : Fragment() {
             bundle
         )
     }
-    private fun setOnCheckBoxListener(item:TodoItem,flag: Boolean,view: View){
+    private fun setOnCheckBoxListener(item: TodoItem, flag: Boolean, view: View){
         mViewModel.editTodoItem(editTodoItem(item,flag))
     }
     private fun setOnLongClickListener(item: TodoItem, view: View) {
         showPopUpMenu(item,view)
     }
 
-    private fun editTodoItem(todoItem: TodoItem,flag:Boolean): TodoItem {
+    private fun editTodoItem(todoItem: TodoItem, flag:Boolean): TodoItem {
         return todoItem.copy(
             flag = flag
         )
     }
-    private fun showPopUpMenu(item: TodoItem,view: View){
+    private fun showPopUpMenu(item: TodoItem, view: View){
 
         var popupMenu = context?.let { PopupMenu(it, view) }
         popupMenu?.inflate(R.menu.popup_menu);
@@ -125,12 +144,12 @@ class MainFragment : Fragment() {
     private fun setResourseObserver(){
         mViewModel.getResourseLiveData().observe(viewLifecycleOwner){
             when(it){
-                is Resourse.Error -> {
+                is Resource.Error -> {
                     Snackbar.make(mBinding.recyclerviewDo,it.message.toString(), Snackbar.LENGTH_LONG)
                     .setAction("Повторить",View.OnClickListener {
                     }).show()
                 }
-                is Resourse.Success -> {
+                is Resource.Success -> {
                     Log.e("good","Good")
                 }
             }
@@ -157,9 +176,15 @@ class MainFragment : Fragment() {
             mBinding.swipeRefresh.isRefreshing = false
         }
     }
-    private fun setYandexAuth(){
 
 
+    private fun setInternetStatusUi(){
+        lifecycleScope.launch {
+            mViewModel.internetConnection.collect{
+                //if(it) mBinding.internetConnection.visibility = View.VISIBLE
+                //else mBinding.internetConnection.visibility = View.GONE
+            }
+        }
     }
 
 }

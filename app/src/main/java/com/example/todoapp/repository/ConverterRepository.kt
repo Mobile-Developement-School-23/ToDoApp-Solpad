@@ -6,10 +6,13 @@ import com.example.todoapp.model.TodoItem
 import com.example.todoapp.network.RevisionService
 import com.example.todoapp.network.model.SetItemResponse
 import com.example.todoapp.util.Utils
+import javax.inject.Inject
 
-class ConverterRepository( private val revisionService: RevisionService ) {
+class ConverterRepository @Inject constructor(
+    private val revisionService: RevisionService
+) {
 
-    fun converterAddTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
+    fun converterAddTodoItem(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val newItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
@@ -31,7 +34,7 @@ class ConverterRepository( private val revisionService: RevisionService ) {
         return emptyList()
     }
 
-    fun converterDeleteTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
+    fun converterDeleteTodoItem(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val deletedItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
@@ -47,7 +50,7 @@ class ConverterRepository( private val revisionService: RevisionService ) {
         } else return emptyList()
     }
 
-    fun converterEditTodoItem(body: SetItemResponse,itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
+    fun converterEditTodoItem(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val editItem = body.todoItemNetwork.mapToTodoItem()
         Log.e("conv",Utils().convertLongDeathlineToString(editItem.deadline))
