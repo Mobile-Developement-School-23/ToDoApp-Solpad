@@ -1,5 +1,6 @@
 package com.example.todoapp.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.todoapp.db.ItemRoomDao
@@ -180,24 +181,11 @@ class TodoItemsRepository @Inject constructor(
 
     private suspend fun deleteTodoItemFlow(id: String): Flow<List<TodoItem>> {
         return flow {
-            val response = checkInternetConnect
-                .checkInternetSet(todoApiNetwork.deleteTodoItem(id))
+            val response = todoApiNetwork.deleteTodoItem(id)
 
             if (checkerResponse(response))
-                emit(
-                    converterRepository.converterDeleteTodoItem(
-                        response.body()!!,
-                        todoItemsLiveData
-                    )
+                emit( converterRepository.converterDeleteTodoItem( response.body()!!, todoItemsLiveData   )
                 )
-
-            emit(
-                checkerResponse(response) {
-                    converterRepository.converterDeleteTodoItem(
-                        response.body()!!,
-                        todoItemsLiveData
-                    )
-                })
         }.flowOn(Dispatchers.IO)
     }
 

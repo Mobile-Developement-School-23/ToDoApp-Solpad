@@ -5,6 +5,7 @@ import dagger.Component
 import dagger.Subcomponent
 
 @Subcomponent(modules = [AddingFragmentModule::class])
+@AddingFramentScope
 interface AddingFragmentComponent {
     @Subcomponent.Factory
     interface Factory{

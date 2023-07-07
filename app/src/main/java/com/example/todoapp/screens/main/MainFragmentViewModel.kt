@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -27,6 +28,10 @@ class MainFragmentViewModel(
 
     private val _internetConnection = MutableStateFlow(true)
     val internetConnection = _internetConnection
+
+    private var _todoList = MutableStateFlow(listOf<TodoItem>())
+    val todoList = _todoList.asStateFlow()
+
 
     init {
         setInternetStatus()
@@ -46,6 +51,8 @@ class MainFragmentViewModel(
 
     fun getListTodoItems() = viewModelScope.launch(Dispatchers.IO) {
         todoItemsRepository.getTodoItems()
+        _todoList.value = todoItemsRepository.mTodoItemsLiveData.value!!
+
     }
 
 

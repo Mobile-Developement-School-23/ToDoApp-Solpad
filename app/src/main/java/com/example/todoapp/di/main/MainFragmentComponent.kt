@@ -6,6 +6,7 @@ import dagger.Component
 import dagger.Subcomponent
 
 @Subcomponent(modules = [MainFragmentModule::class])
+@MainFragmentScope
 interface MainFragmentComponent {
     @Subcomponent.Factory
     interface Factory{

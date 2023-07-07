@@ -16,8 +16,9 @@ import com.example.todoapp.model.Importance
 import com.example.todoapp.model.TodoItem
 import com.example.todoapp.util.ItemDiffCallback
 import com.example.todoapp.util.Utils
+import javax.inject.Inject
 
-class MainAdapter(
+class MainAdapter (
     private val onClickListener: OnClickListener,
     private val onLongClickListener: OnLongClickListener,
     private val onCheckBoxClickListener: OnCheckBoxClickListener,
@@ -77,7 +78,8 @@ class MainAdapter(
 
         // обработчик нажатия на чекбокс
         holder.checkBoxItem.setOnCheckedChangeListener{ buttonView, isChecked ->
-           //onCheckBoxClickListener.onClick(getItem(position),isChecked,holder.itemView)
+            onCheckBoxClickListener.onClick(getItem(position),isChecked,holder.itemView)
+            Log.e("adapterListener","knok")
             if (getItem(position).flag == true) {
                 holder.textItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             } else if (getItem(position).flag == false) {
@@ -135,5 +137,6 @@ class MainAdapter(
                 View.GONE
         }
     }
+
 
 }

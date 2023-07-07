@@ -10,15 +10,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
 import com.example.todoapp.screens.main.MainFragmentViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import okhttp3.internal.notify
 
 
-class MainItemTouchHelper(
-    val adapter: MainAdapter,
-    val mViewModel: MainFragmentViewModel,
-    val view:View
+class MainItemTouchHelper @AssistedInject constructor(
+    @Assisted("MainViewModel") private val mViewModel: MainFragmentViewModel,
+    @Assisted("view") private val view: View,
+    @Assisted("Adapter") private val adapter: MainAdapter,
     ):ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("MainViewModel") mViewModel: MainFragmentViewModel,
+            @Assisted("view") view: View,
+            @Assisted("Adapter") adapter: MainAdapter,
+        ): MainItemTouchHelper
+    }
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -34,6 +46,7 @@ class MainItemTouchHelper(
             ItemTouchHelper.LEFT ->{
                 mViewModel.deleteTodoItem(item,item.id)
                 adapter.notifyDataSetChanged()
+
                 var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview_do)
                 Snackbar.make(recyclerView,"Отменить удаление?",Snackbar.LENGTH_LONG)
                     .setAction("Да",View.OnClickListener {

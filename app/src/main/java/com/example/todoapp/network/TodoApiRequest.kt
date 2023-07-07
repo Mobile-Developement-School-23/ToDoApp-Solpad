@@ -27,8 +27,7 @@ interface TodoApiRequest {
 
     @DELETE("list/{id}")
     suspend fun deleteTodoItem(
-        @Path("id")
-        id: String
+        @Path("id") id: String
     ): Response<SetItemResponse>
 
     @PUT("list/{id}")

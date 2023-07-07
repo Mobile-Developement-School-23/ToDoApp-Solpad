@@ -1,6 +1,5 @@
 package com.example.todoapp.screens.main
 
-
 import android.content.Context
 import android.opengl.Visibility
 import android.os.Bundle
@@ -11,8 +10,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,11 +32,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val mBinding get() = _binding!!
-
     private lateinit var adapterToDo: MainAdapter
 
     @Inject
@@ -43,10 +42,15 @@ class MainFragment : Fragment() {
     private lateinit var mViewModel: MainFragmentViewModel
     private lateinit var mainFragmentComponent: MainFragmentComponent
 
+    @Inject
+    lateinit var mainItemTouchHelperFactory: MainItemTouchHelper.Factory
+    private var mainItemTouchHelperCallback: MainItemTouchHelper? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mainFragmentComponent = (requireContext().applicationContext as Application).appComponent.mainFragmentComponent().create()
+        mainFragmentComponent =
+            (requireContext().applicationContext as Application).appComponent.mainFragmentComponent()
+                .create()
         mainFragmentComponent.inject(this)
     }
 
@@ -54,40 +58,57 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(this, mainViewModelFactory)[MainFragmentViewModel::class.java]
+        mViewModel =
+            ViewModelProvider(this, mainViewModelFactory)[MainFragmentViewModel::class.java]
         _binding = FragmentMainBinding.inflate(layoutInflater, container, false)
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initialization(view)
+        initialization()
         mBinding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_addingFragment)
         }
-
+        mainItemTouchHelperCallback = mainItemTouchHelperFactory.create(
+            mViewModel,
+            view,
+            adapterToDo
+        )
+        setItemTouchHelper()
         mViewModel.getListTodoItems()
-        mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner){
+        mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner) {
             adapterToDo.submitList(it)
             adapterToDo.notifyDataSetChanged()
         }
-    }
-    //Инициализация всего в одной функции.
-    private fun initialization(view: View) {
-        setRecyclerView()
-        setItemTouchHelper(view)
-        setResourseObserver()
-        setSwipeRefresh()
-        setInternetStatusUi()
+
     }
 
-    // инициализация ресайклера
+    private fun initialization() {
+        setRecyclerView()
+
+        setResourseObserver()
+        setSwipeRefresh()
+        //setInternetStatusUi()
+    }
+
     private fun setRecyclerView() {
         mBinding?.apply {
             adapterToDo = MainAdapter(
                 MainAdapter.OnClickListener { setOnClickListenerRV(it) },
-                MainAdapter.OnLongClickListener { item, view -> setOnLongClickListener(item, view) },
-                MainAdapter.OnCheckBoxClickListener { item, flag, view -> setOnCheckBoxListener(item, flag,view) })
+                MainAdapter.OnLongClickListener { item, view ->
+                    setOnLongClickListener(
+                        item,
+                        view
+                    )
+                },
+                MainAdapter.OnCheckBoxClickListener { item, flag, view ->
+                    setOnCheckBoxListener(
+                        item,
+                        flag,
+                        view
+                    )
+                })
             var linearLayoutManager = LinearLayoutManager(context).apply {
                 reverseLayout = true
             }
@@ -97,7 +118,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    // clickListener на элемент ресайклера, тут же отправляем Bundle в AddingFragment
     private fun setOnClickListenerRV(item: TodoItem) {
         val bundle = bundleOf("item" to item)
         findNavController().navigate(
@@ -105,19 +125,23 @@ class MainFragment : Fragment() {
             bundle
         )
     }
-    private fun setOnCheckBoxListener(item: TodoItem, flag: Boolean, view: View){
-        mViewModel.editTodoItem(editTodoItem(item,flag))
-    }
-    private fun setOnLongClickListener(item: TodoItem, view: View) {
-        showPopUpMenu(item,view)
+
+    private fun setOnCheckBoxListener(item: TodoItem, flag: Boolean, view: View) {
+        Log.e("CheckBoxListener", item.toString())
+        mViewModel.editTodoItem(editTodoItem(item, flag))
     }
 
-    private fun editTodoItem(todoItem: TodoItem, flag:Boolean): TodoItem {
+    private fun setOnLongClickListener(item: TodoItem, view: View) {
+        showPopUpMenu(item, view)
+    }
+
+    private fun editTodoItem(todoItem: TodoItem, flag: Boolean): TodoItem {
         return todoItem.copy(
             flag = flag
         )
     }
-    private fun showPopUpMenu(item: TodoItem, view: View){
+
+    private fun showPopUpMenu(item: TodoItem, view: View) {
 
         var popupMenu = context?.let { PopupMenu(it, view) }
         popupMenu?.inflate(R.menu.popup_menu);
@@ -131,45 +155,56 @@ class MainFragment : Fragment() {
                     )
                     true
                 }
+
                 R.id.menu_delete -> {
-                    mViewModel.deleteTodoItem(item,item.id)
+                    mViewModel.deleteTodoItem(item, item.id)
                     true
                 }
+
                 else -> false
             }
         }
         popupMenu?.show();
     }
 
-    private fun setResourseObserver(){
-        mViewModel.getResourseLiveData().observe(viewLifecycleOwner){
-            when(it){
+    private fun setResourseObserver() {
+        mViewModel.getResourseLiveData().observe(viewLifecycleOwner) {
+            when (it) {
                 is Resource.Error -> {
-                    Snackbar.make(mBinding.recyclerviewDo,it.message.toString(), Snackbar.LENGTH_LONG)
-                    .setAction("Повторить",View.OnClickListener {
-                    }).show()
+                    Snackbar.make(
+                        mBinding.recyclerviewDo,
+                        it.message.toString(),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction("Повторить", View.OnClickListener {
+                        }).show()
                 }
+
                 is Resource.Success -> {
-                    Log.e("good","Good")
                 }
             }
         }
     }
-    private fun setItemTouchHelper(view: View){
-        var simpleItemTouchCallback = MainItemTouchHelper(adapterToDo,mViewModel,view)
-        var itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(mBinding.recyclerviewDo)
+
+    private fun setItemTouchHelper() {
+
+        mainItemTouchHelperCallback?.let {
+            ItemTouchHelper(it).attachToRecyclerView(mBinding.recyclerviewDo)
+        }
+
 
     }
 
-    private fun setSwipeRefresh(){
+    private fun setSwipeRefresh() {
         mBinding.swipeRefresh.setOnRefreshListener {
-
             mViewModel.getListTodoItems()
-
-            if (!mViewModel.checkInternetConnection()){
-                Snackbar.make(mBinding.recyclerviewDo,"Отсутствует интернет соединение",Snackbar.LENGTH_LONG)
-                    .setAction("Обновить",View.OnClickListener {
+            if (!mViewModel.checkInternetConnection()) {
+                Snackbar.make(
+                    mBinding.recyclerviewDo,
+                    "Отсутствует интернет соединение",
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction("Обновить", View.OnClickListener {
                         mViewModel.getListTodoItems()
                     }).show()
             }
@@ -177,14 +212,12 @@ class MainFragment : Fragment() {
         }
     }
 
-
-    private fun setInternetStatusUi(){
+    private fun setInternetStatusUi() {
         lifecycleScope.launch {
-            mViewModel.internetConnection.collect{
+            mViewModel.internetConnection.collect {
                 //if(it) mBinding.internetConnection.visibility = View.VISIBLE
                 //else mBinding.internetConnection.visibility = View.GONE
             }
         }
     }
-
 }
