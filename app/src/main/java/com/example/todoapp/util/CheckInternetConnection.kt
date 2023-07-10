@@ -6,12 +6,26 @@ import com.example.todoapp.network.model.GetListItemsNetwork
 import com.example.todoapp.network.model.SetItemResponse
 import retrofit2.Response
 import java.io.IOException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
 class CheckInternetConnection @Inject constructor(private val connectivityManager: ConnectivityManager){
 
-
+    fun checkerResponse(response: Response<SetItemResponse>): Boolean {
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) return true
+            else throw UnknownHostException("Тело запроса - null")
+        } else throw UnknownHostException(response.message())
+    }
+    fun checkerGetResponse(response: Response<GetListItemsNetwork>): Boolean {
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) return true
+            else throw UnknownHostException("Тело запроса - null")
+        } else throw UnknownHostException(response.message())
+    }
     fun checkInternetGet(response: Response<GetListItemsNetwork>) =
         if (checkInternet()) response
         else throw IOException("Нет интернет соединения")

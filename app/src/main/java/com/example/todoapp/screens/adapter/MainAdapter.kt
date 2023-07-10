@@ -78,7 +78,7 @@ class MainAdapter (
 
         // обработчик нажатия на чекбокс
         holder.checkBoxItem.setOnCheckedChangeListener{ buttonView, isChecked ->
-            onCheckBoxClickListener.onClick(getItem(position),isChecked,holder.itemView)
+            //onCheckBoxClickListener.onClick(getItem(position),isChecked,holder.itemView)
             Log.e("adapterListener","knok")
             if (getItem(position).flag == true) {
                 holder.textItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG

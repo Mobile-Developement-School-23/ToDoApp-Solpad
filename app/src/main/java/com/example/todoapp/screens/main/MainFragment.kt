@@ -49,8 +49,7 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainFragmentComponent =
-            (requireContext().applicationContext as Application).appComponent.mainFragmentComponent()
-                .create()
+            (requireContext().applicationContext as Application).appComponent.mainFragmentComponent().create()
         mainFragmentComponent.inject(this)
     }
 
@@ -70,23 +69,21 @@ class MainFragment : Fragment() {
         mBinding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_addingFragment)
         }
-        mainItemTouchHelperCallback = mainItemTouchHelperFactory.create(
-            mViewModel,
-            view,
-            adapterToDo
-        )
+        mainItemTouchHelperCallback = mainItemTouchHelperFactory.create(mViewModel, view, adapterToDo)
         setItemTouchHelper()
         mViewModel.getListTodoItems()
-        mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner) {
-            adapterToDo.submitList(it)
-            adapterToDo.notifyDataSetChanged()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner) {
+                    adapterToDo.submitList(it)
+                    adapterToDo.notifyDataSetChanged()
+                }
+            }
         }
-
     }
 
     private fun initialization() {
         setRecyclerView()
-
         setResourseObserver()
         setSwipeRefresh()
         //setInternetStatusUi()
@@ -97,17 +94,10 @@ class MainFragment : Fragment() {
             adapterToDo = MainAdapter(
                 MainAdapter.OnClickListener { setOnClickListenerRV(it) },
                 MainAdapter.OnLongClickListener { item, view ->
-                    setOnLongClickListener(
-                        item,
-                        view
-                    )
+                    setOnLongClickListener(item, view)
                 },
                 MainAdapter.OnCheckBoxClickListener { item, flag, view ->
-                    setOnCheckBoxListener(
-                        item,
-                        flag,
-                        view
-                    )
+                    setOnCheckBoxListener(item, flag, view)
                 })
             var linearLayoutManager = LinearLayoutManager(context).apply {
                 reverseLayout = true

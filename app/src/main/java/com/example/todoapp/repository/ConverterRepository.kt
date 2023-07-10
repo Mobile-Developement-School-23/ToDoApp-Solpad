@@ -12,7 +12,7 @@ class ConverterRepository @Inject constructor(
     private val revisionService: RevisionService
 ) {
 
-    fun converterAddTodoItem(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
+    fun convertAdd(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val newItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
@@ -34,7 +34,7 @@ class ConverterRepository @Inject constructor(
         return emptyList()
     }
 
-    fun converterDeleteTodoItem(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
+    fun convertDelete(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val deletedItem = body.todoItemNetwork.mapToTodoItem()
         val todoItems = itemLiveData.value
@@ -50,7 +50,7 @@ class ConverterRepository @Inject constructor(
         } else return emptyList()
     }
 
-    fun converterEditTodoItem(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
+    fun convertEdit(body: SetItemResponse, itemLiveData: LiveData<List<TodoItem>>): List<TodoItem> {
         revisionService.setRevisionNetwork(body.revision)
         val editItem = body.todoItemNetwork.mapToTodoItem()
         Log.e("conv",Utils().convertLongDeathlineToString(editItem.deadline))

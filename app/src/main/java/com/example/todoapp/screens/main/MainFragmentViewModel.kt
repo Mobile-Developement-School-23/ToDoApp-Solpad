@@ -64,8 +64,8 @@ class MainFragmentViewModel(
         return todoItemsRepository.resourseRequest
     }
 
-    fun checkInternetConnection() =
-        todoItemsRepository.checkInternetConnection()
+    fun checkInternetConnection() = todoItemsRepository.checkInternetConnection()
+
 
     private fun setInternetStatus(){
         viewModelScope.launch {
