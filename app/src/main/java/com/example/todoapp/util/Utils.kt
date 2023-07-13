@@ -3,6 +3,10 @@ package com.example.todoapp.util
 import com.example.todoapp.model.Importance
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 class Utils {
@@ -27,3 +31,12 @@ class Utils {
 
 
 }
+
+fun LocalDate.toStringDate(): String =
+    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(this)
+
+fun LocalDate.toLong(): Long {
+    val zoneId = ZoneOffset.UTC
+    return atStartOfDay(zoneId).toEpochSecond() * 1000
+}
+fun convertLongDeathlineToString(TimeinMilliSeccond :Long) =  SimpleDateFormat("dd MMMM yyyy").format(Date(TimeinMilliSeccond))

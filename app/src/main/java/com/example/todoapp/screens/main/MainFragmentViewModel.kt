@@ -51,7 +51,6 @@ class MainFragmentViewModel(
 
     fun getListTodoItems() = viewModelScope.launch(Dispatchers.IO) {
         todoItemsRepository.getTodoItems()
-        _todoList.value = todoItemsRepository.mTodoItemsLiveData.value!!
 
     }
 

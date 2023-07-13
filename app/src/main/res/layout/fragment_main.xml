@@ -29,11 +29,18 @@
                 app:expandedTitleTextAppearance="@style/TextAppearance.LargeTitle"
                 app:expandedTitleTextColor="?attr/label_primary"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+                app:expandedTitleMargin="20dp"
                 app:title="@string/title">
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize" />
+                    android:layout_height="?attr/actionBarSize"
+                    android:paddingLeft="42dp"
+                    android:layout_gravity="top"
+                    android:layout_marginBottom="4dp"
+                    app:layout_collapseMode="pin"
+                    android:layout_marginStart="35dp"
+                    />
 
                 <TextView
                     android:id="@+id/complete_title"
@@ -60,6 +67,19 @@
                     android:src="@drawable/ic_eye"
                     app:layout_collapseMode="pin"
                     app:tint="@color/color_light_blue" />
+
+                <ImageView
+                    android:id="@+id/settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_settings"
+                    app:layout_collapseMode="pin"
+                    app:tint="?attr/label_primary"
+                    />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>

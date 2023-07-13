@@ -3,6 +3,7 @@ package com.example.todoapp.screens.main
 import android.content.Context
 import android.opengl.Visibility
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,20 +76,18 @@ class MainFragment : Fragment() {
         mainItemTouchHelperCallback = mainItemTouchHelperFactory.create(mViewModel, view, adapterToDo)
         setItemTouchHelper()
         mViewModel.getListTodoItems()
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner) {
-                    adapterToDo.submitList(it)
-                    adapterToDo.notifyDataSetChanged()
-                }
-            }
+        mViewModel.getTodoItemsLiveData().observe(viewLifecycleOwner) {
+            adapterToDo.submitList(it)
+            adapterToDo.notifyDataSetChanged()
         }
     }
+
 
     private fun initialization() {
         setRecyclerView()
         setResourseObserver()
         setSwipeRefresh()
+        setSettingListener()
         //setInternetStatusUi()
     }
 
@@ -111,11 +113,10 @@ class MainFragment : Fragment() {
     private fun setOnClickListenerRV(item: TodoItem) {
         val bundle = bundleOf("item" to item)
         findNavController().navigate(
-            R.id.action_mainFragment_to_addingFragment,
+            R.id.action_mainFragment_to_addingFragmentCompose,
             bundle
         )
     }
-
     private fun setOnCheckBoxListener(item: TodoItem, flag: Boolean, view: View) {
         Log.e("CheckBoxListener", item.toString())
         mViewModel.editTodoItem(editTodoItem(item, flag))
@@ -208,6 +209,12 @@ class MainFragment : Fragment() {
                 //if(it) mBinding.internetConnection.visibility = View.VISIBLE
                 //else mBinding.internetConnection.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setSettingListener(){
+        mBinding.settings.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
         }
     }
 }
