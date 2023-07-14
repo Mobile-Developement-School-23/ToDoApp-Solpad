@@ -1,12 +1,9 @@
 package com.example.todoapp.util
 
+import android.util.Log
 import com.example.todoapp.model.Importance
-import java.io.IOException
+import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 class Utils {
@@ -32,11 +29,33 @@ class Utils {
 
 }
 
-fun LocalDate.toStringDate(): String =
-    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(this)
-
-fun LocalDate.toLong(): Long {
-    val zoneId = ZoneOffset.UTC
-    return atStartOfDay(zoneId).toEpochSecond() * 1000
-}
 fun convertLongDeathlineToString(TimeinMilliSeccond :Long) =  SimpleDateFormat("dd MMMM yyyy").format(Date(TimeinMilliSeccond))
+
+fun convertMinutesToLong( TimeinMilliSeccond:Long,hour:Int,min:Int):Long{
+    var year = SimpleDateFormat("yyyy").format(Date(TimeinMilliSeccond))
+    var day = SimpleDateFormat("dd").format(Date(TimeinMilliSeccond))
+    var mount = SimpleDateFormat("MM").format(Date(TimeinMilliSeccond))
+
+    val date = SimpleDateFormat("yyyy MM dd hh mm").parse("$year $mount $day $hour $min")
+    return date.time
+}
+fun convertImportanceToString(importance: Importance): String{
+    return when(importance){
+        Importance.BASIC -> "Нет"
+        Importance.LOW -> "Низкий"
+        Importance.IMPORTANT -> "Высокий"
+        else -> "Нет"
+    }
+}
+fun convertIntTimeToString(hour: Int,min: Int): String {
+    var ans = "00:00"
+    if(hour>10){
+        if(min>10) ans = "$hour:$min"
+        else ans = "$hour:0$min"
+    }
+    else{
+        if(min>10)ans = "0$hour:$min"
+        else "0$hour:0$min"
+    }
+    return ans
+}

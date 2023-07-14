@@ -40,19 +40,19 @@ class SettingsFragment : Fragment() {
     fun setLigthTheme(){
         mBinding.lightTheme.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
-            findNavController().navigate(R.id.action_settingsFragment_to_mainFragment)
+            findNavController().popBackStack()
         }
     }
     fun setNightTheme(){
         mBinding.nightTheme.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-            findNavController().navigate(R.id.action_settingsFragment_to_mainFragment)
+            findNavController().popBackStack()
         }
     }
     fun setSystemTheme(){
         mBinding.systemTheme.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
-            findNavController().navigate(R.id.action_settingsFragment_to_mainFragment)
+            findNavController().popBackStack()
         }
     }
 

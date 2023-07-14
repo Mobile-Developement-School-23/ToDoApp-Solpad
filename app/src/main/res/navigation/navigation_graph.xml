@@ -18,13 +18,6 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainFragment_to_addingFragmentCompose"
-            app:destination="@id/addingFragmentCompose"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
-        <action
             android:id="@+id/action_mainFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
             app:enterAnim="@anim/slide_in_left"
@@ -36,26 +29,10 @@
         android:id="@+id/addingFragment"
         android:name="com.example.todoapp.screens.adding.AddingFragment"
         android:label="fragment_adding"
-        tools:layout="@layout/fragment_adding" >
-        <action
-            android:id="@+id/action_addingFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/addingFragmentCompose"
-        android:name="AddingFragmentCompose"
-        android:label="AddingFragmentCompose" >
-        <action
-            android:id="@+id/action_addingFragmentCompose_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_adding" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.todoapp.screens.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
-        <action
-            android:id="@+id/action_settingsFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_settings" />
 </navigation>

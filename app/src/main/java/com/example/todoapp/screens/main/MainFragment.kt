@@ -113,7 +113,7 @@ class MainFragment : Fragment() {
     private fun setOnClickListenerRV(item: TodoItem) {
         val bundle = bundleOf("item" to item)
         findNavController().navigate(
-            R.id.action_mainFragment_to_addingFragmentCompose,
+            R.id.action_mainFragment_to_addingFragment,
             bundle
         )
     }
@@ -151,7 +151,6 @@ class MainFragment : Fragment() {
                     mViewModel.deleteTodoItem(item, item.id)
                     true
                 }
-
                 else -> false
             }
         }

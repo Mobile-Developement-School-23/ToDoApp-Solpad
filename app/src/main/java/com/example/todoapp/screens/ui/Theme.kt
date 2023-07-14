@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Immutable
-data class ExtendedColors(
+data class TodoAppCustomColor(
     val supportSeparator: Color = Color.Unspecified,
     val supportOverlay: Color = Color.Unspecified,
     val labelPrimary: Color = Color.Unspecified,
@@ -36,7 +36,7 @@ data class ExtendedColors(
     val backSecondary: Color = Color.Unspecified,
     val backElevated: Color = Color.Unspecified
 )
-val lightExtendedColors = ExtendedColors(
+val lightExtendedColors = TodoAppCustomColor(
     supportSeparator = LightSupportSeparator,
     supportOverlay = LightSupportOverlay,
     labelPrimary = LightLabelPrimary,
@@ -48,7 +48,7 @@ val lightExtendedColors = ExtendedColors(
     backElevated = LightBackElevated
 )
 
-val darkExtendedColors = ExtendedColors(
+val darkExtendedColors = TodoAppCustomColor(
     supportSeparator = DarkSupportSeparator,
     supportOverlay = DarkSupportOverlay,
     labelPrimary = DarkLabelPrimary,
@@ -82,20 +82,9 @@ val Typography = Typography(
         letterSpacing = 0.25.sp
     )
 
-    /*
-    labelSmall = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.Medium,
-    fontSize = 11.sp,
-    lineHeight = 16.sp,
-    letterSpacing = 0.5.sp
-    )
-    */
 )
 
-val LocalExtendedColors = staticCompositionLocalOf {
-    ExtendedColors()
-}
+val myColor = staticCompositionLocalOf { TodoAppCustomColor() }
 @Composable
 fun TodoAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -123,7 +112,7 @@ fun TodoAppTheme(
         }
     }
 
-    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+    CompositionLocalProvider(myColor provides extendedColors) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
@@ -133,8 +122,8 @@ fun TodoAppTheme(
 }
 
 
-object ExtendedTheme {
-    val colors: ExtendedColors
+object TodoAppCustomTheme {
+    val colors: TodoAppCustomColor
         @Composable
-        get() = LocalExtendedColors.current
+        get() = myColor.current
 }
