@@ -26,5 +26,6 @@
         <item name="back_primary">@color/back_light_primary</item>
         <item name="back_secondary">@color/back_light_secondary</item>
         <item name="back_elevated">@color/back_light_elevated</item>
+        <item name="snackbarBackgroundColor">@color/dark_4</item>
     </style>
 </resources>

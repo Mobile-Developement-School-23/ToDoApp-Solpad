@@ -22,5 +22,6 @@
     <string name="importance_important">Высокий</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="item_deleted">Заметка удалена</string>
 
 </resources>

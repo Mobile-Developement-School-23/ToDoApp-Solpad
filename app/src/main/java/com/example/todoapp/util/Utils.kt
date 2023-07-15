@@ -1,6 +1,10 @@
 package com.example.todoapp.util
 
+import android.content.Context
 import android.util.Log
+import android.util.TypedValue
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import com.example.todoapp.model.Importance
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -58,4 +62,18 @@ fun convertIntTimeToString(hour: Int,min: Int): String {
         else "0$hour:0$min"
     }
     return ans
+}
+
+
+fun Context.convertDpToPixels(dp: Float) =
+    dp * this.resources.displayMetrics.density
+
+@ColorInt
+fun Context.getColorFromAttr(
+    @AttrRes attrColor: Int,
+    typedValue: TypedValue = TypedValue(),
+    resolveRefs: Boolean = true
+): Int {
+    theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+    return typedValue.data
 }

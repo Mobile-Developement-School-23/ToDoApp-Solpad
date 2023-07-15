@@ -15,4 +15,5 @@
     <attr name="back_primary" format="color|reference"/>
     <attr name="back_secondary" format="color|reference"/>
     <attr name="back_elevated" format="color|reference"/>
+    <attr name="snackbarBackgroundColor" format="reference|color" />
 </resources>
