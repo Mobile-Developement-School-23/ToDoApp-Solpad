@@ -187,8 +187,8 @@ class TodoItemsRepository @Inject constructor(private val todoApiNetwork: TodoAp
     suspend fun synchronizationData(todoItemsNetwork: List<TodoItem>) {
         val revisionNetwork = revisionService.getRevisionNetwork()
         val revisionDatabase = revisionService.getRevisionDatabase()
-        if (revisionNetwork > revisionDatabase) synchronizationDatabase(todoItemsNetwork, todoApiDatabase.getAll())
-        else synchronizationNetwork(todoApiDatabase.getAll())
+        // if (revisionNetwork > revisionDatabase) synchronizationDatabase(todoItemsNetwork, todoApiDatabase.getAll())
+        //else synchronizationNetwork(todoApiDatabase.getAll())
     }
     suspend fun synchronizationDatabase(todoItemsDatabase: List<TodoItem>, todoItemsNetwork: List<TodoItem>) {
         if (todoItemsDatabase.isNotEmpty()) todoApiDatabase.deleteAll()
